@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use std::f32::consts::PI;
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Sign {
@@ -16,15 +17,13 @@ pub struct Octant {
 
 
 impl Octant {
+    pub fn projection(self) -> Mat3A {
+        let alpha = (PI / 6.0).tan().asin();
+        Mat3A::from_euler(EulerRot::ZXY, 0.0, alpha, PI / 2.0)
+    }
+
     pub fn project(self, coords: Vec3A) -> Vec2 {
-        // because APPARENTLY I can't use sqrt in const...
-        let PROJECTION: Mat3A = Mat3A::from_cols_array(&[
-            3.0_f32.sqrt(), 1.0,  0.0,
-            0.0,            2.0, 0.0,
-           -3.0_f32.sqrt(), 1.0,  0.0,
-       ]) / 6.0_f32.sqrt();
-        // TODO: actually. use the octant lol
-        let transformed = PROJECTION * coords;
+        let transformed = self.projection() * coords;
         Vec2::new(
             transformed.x,
             transformed.y,

@@ -1,5 +1,4 @@
 use macroquad::prelude::*;
-use std::f32::consts::PI;
 use functor_derive::Functor;
 
 mod util;
