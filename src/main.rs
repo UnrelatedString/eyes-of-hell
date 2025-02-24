@@ -2,9 +2,13 @@ use macroquad::prelude::*;
 use std::f32::consts::PI;
 
 mod util;
-use util::{
+use crate::util::{
     draw_quad, // ironic
 };
+
+mod axonometric;
+use crate::axonometric::Octant;
+use crate::axonometric::Sign::*;
 
 #[macroquad::main("EyesOfHell")]
 async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have errors
@@ -18,82 +22,31 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
 
         // just, like, blindly assume a 4:3 aspect ratio for now,
         // and let shit clip off the sides if it's narrower than that
-        let scale = screen_height() / 40.0;
+        let scale = screen_height() / 20.0;
 
-        // traditional dimetric
-
-        let left = Vec2::new(
-            -8.0,
-            0.0,
-        ) * scale + center;
+        let o = Octant{x: Pos, y: Pos, z: Pos};
 
         draw_quad(
-            Vec2::new(0.0, 1.0) * scale + left,
-            Vec2::new(2.0, 0.0) * scale + left,
-            Vec2::new(0.0, -1.0) * scale + left,
-            Vec2::new(-2.0, 0.0) * scale + left,
+            o.project(Vec3A::new(-1.0, 0.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 0.0, -1.0)) * scale + center,
+            o.project(Vec3A::new(-1.0, 0.0, -1.0)) * scale + center,
             WHITE
         );
 
         draw_quad(
-            Vec2::new(-2.0, 0.0) * scale + left,
-            Vec2::new(0.0, 1.0) * scale + left,
-            Vec2::new(0.0, 3.0) * scale + left,
-            Vec2::new(-2.0, 2.0) * scale + left,
+            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(-1.0, 0.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(-1.0, 1.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 1.0, 0.0)) * scale + center,
             LIGHTGRAY
         );
 
         draw_quad(
-            Vec2::new(2.0, 0.0) * scale + left,
-            Vec2::new(0.0, 1.0) * scale + left,
-            Vec2::new(0.0, 3.0) * scale + left,
-            Vec2::new(2.0, 2.0) * scale + left,
-            DARKGRAY
-        );
-
-        // true isometric (hopefully)
-
-        let rightish = Vec2::new(
-            6.0,
-            0.0,
-        ) * scale + center;
-
-        draw_hexagon(
-            rightish.x,
-            rightish.y,
-            2.0 * scale,
-            0.0,
-            true,
-            WHITE,
-            WHITE
-        );
-
-        let right = Vec2::new(
-            10.0,
-            0.0,
-        ) * scale + center;
-
-        draw_quad(
-            Vec2::new(0.0, (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new((PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
-            Vec2::new(0.0, -(PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new(-(PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
-            WHITE
-        );
-
-        draw_quad(
-            Vec2::new(-(PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
-            Vec2::new(0.0, (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new(0.0, 1.0 + (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new(-(PI / 6.0).cos(), 1.0) * 2.0 * scale + right,
-            LIGHTGRAY
-        );
-
-        draw_quad(
-            Vec2::new((PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
-            Vec2::new(0.0, (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new(0.0, 1.0 + (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new((PI / 6.0).cos(), 1.0) * 2.0 * scale + right,
+            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 0.0, -1.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 1.0, -1.0)) * scale + center,
+            o.project(Vec3A::new(0.0, 1.0, 0.0)) * scale + center,
             DARKGRAY
         );
 
