@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use std::f32::consts::PI;
 
 mod util;
 use util::{
@@ -52,14 +53,14 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
 
         // true isometric (hopefully)
 
-        let right = Vec2::new(
-            8.0,
+        let rightish = Vec2::new(
+            6.0,
             0.0,
         ) * scale + center;
 
         draw_hexagon(
-            right.x,
-            right.y,
+            rightish.x,
+            rightish.y,
             2.0 * scale,
             0.0,
             true,
@@ -67,6 +68,18 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
             WHITE
         );
 
+        let right = Vec2::new(
+            10.0,
+            0.0,
+        ) * scale + center;
+
+        draw_quad(
+            Vec2::new(0.0, (PI / 3.0).sin() * 4.0) * scale + right,
+            Vec2::new((PI / 3.0).cos() * 2.0, 0.0) * scale + right,
+            Vec2::new(0.0, -(PI / 3.0).sin() * 4.0) * scale + right,
+            Vec2::new(-(PI / 3.0).cos() * 2.0, 0.0) * scale + right,
+            WHITE
+        );
 
         next_frame().await
     }
