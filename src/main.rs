@@ -34,6 +34,22 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
             WHITE
         );
 
+        draw_quad(
+            Vec2::new(-2.0, 0.0) * scale + left,
+            Vec2::new(0.0, -1.0) * scale + left,
+            Vec2::new(0.0, -3.0) * scale + left,
+            Vec2::new(-2.0, -2.0) * scale + left,
+            LIGHTGRAY
+        );
+
+        draw_quad(
+            Vec2::new(2.0, 0.0) * scale + left,
+            Vec2::new(0.0, -1.0) * scale + left,
+            Vec2::new(0.0, -3.0) * scale + left,
+            Vec2::new(2.0, -2.0) * scale + left,
+            DARKGRAY
+        );
+
         // true isometric (hopefully)
 
         // ...
