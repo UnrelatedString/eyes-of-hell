@@ -1,9 +1,11 @@
 use macroquad::prelude::*;
 use std::f32::consts::PI;
+use functor_derive::Functor;
 
 mod util;
 use crate::util::{
-    draw_quad, // ironic
+    Quad,
+    Drawable,
 };
 
 mod axonometric;
@@ -25,30 +27,27 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
         let scale = screen_height() / 20.0;
 
         let o = Octant{x: Pos, y: Pos, z: Pos};
+            
+        Quad(
+            Vec3A::new(-1.0, 0.0, 0.0),
+            Vec3A::new(0.0, 0.0, 0.0),
+            Vec3A::new(0.0, 0.0, -1.0),
+            Vec3A::new(-1.0, 0.0, -1.0),
+        ).fmap(|v| o.project(v) * scale + center).draw_colored(WHITE);
 
-        draw_quad(
-            o.project(Vec3A::new(-1.0, 0.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 0.0, -1.0)) * scale + center,
-            o.project(Vec3A::new(-1.0, 0.0, -1.0)) * scale + center,
-            WHITE
-        );
+        Quad(
+            Vec3A::new(-1.0, 0.0, 0.0),
+            Vec3A::new(0.0, 0.0, 0.0),
+            Vec3A::new(0.0, 1.0, 0.0),
+            Vec3A::new(-1.0, 1.0, 0.0),
+        ).fmap(|v| o.project(v) * scale + center).draw_colored(LIGHTGRAY);
 
-        draw_quad(
-            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(-1.0, 0.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(-1.0, 1.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 1.0, 0.0)) * scale + center,
-            LIGHTGRAY
-        );
-
-        draw_quad(
-            o.project(Vec3A::new(0.0, 0.0, 0.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 0.0, -1.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 1.0, -1.0)) * scale + center,
-            o.project(Vec3A::new(0.0, 1.0, 0.0)) * scale + center,
-            DARKGRAY
-        );
+        Quad(
+            Vec3A::new(0.0, 0.0, -1.0),
+            Vec3A::new(0.0, 0.0, 0.0),
+            Vec3A::new(0.0, 1.0, 0.0),
+            Vec3A::new(0.0, 1.0, -1.0),
+        ).fmap(|v| o.project(v) * scale + center).draw_colored(DARKGRAY);
 
         next_frame().await
     }

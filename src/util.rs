@@ -1,13 +1,20 @@
 use macroquad::prelude::*;
+use functor_derive::Functor;
 
-pub fn draw_quad(v1: Vec2, v2: Vec2, v3: Vec2, v4: Vec2, color: Color) {
-    // It's probably better to use the graphics context directly 
-    // but for a proof of concept this is fine
-    // ...and also I can't find get_context() so it might not even be part of the API lol
-    // maybe I will switch to miniquad a bit later
-    
-    // I think I also prefer how miniquad makes you pass context around explicitly
-    // instead of having stuff mutate global state without even thinking about it 🙃
-    draw_triangle(v1, v2, v4, color);
-    draw_triangle(v2, v3, v4, color);
+// OOH OOH todo: occlusion by reified *full rhombus cube faces* because that's really all it needs
+// could be pretty simple since hexagonal tiling is deceptively simple to begin with. all just half offsets and whatnot
+// still allows for stuff that's finer grained than that to just possibly render behind stuff because that is no big deal and the tiling helps determine how they layer anyways. probably. actually no that sucks for like non grid snapped stuff never mind D:
+
+pub trait Drawable {
+    fn draw_colored(&self, color: Color) -> (); // this is too stupid for there to be any way this is what I actually do with other stuff that could impl this but uhhhh yeah
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Functor)]
+pub struct Quad<T>(pub T, pub T, pub T, pub T);
+
+impl Drawable for Quad<Vec2> {
+    fn draw_colored(&self, color: Color) -> () {
+        draw_triangle(self.0, self.1, self.3, color);
+        draw_triangle(self.1, self.2, self.3, color);
+    }
 }
