@@ -22,7 +22,7 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
         // traditional dimetric
 
         let left = Vec2::new(
-            -4.0,
+            -8.0,
             0.0,
         ) * scale + center;
 
@@ -36,23 +36,37 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
 
         draw_quad(
             Vec2::new(-2.0, 0.0) * scale + left,
-            Vec2::new(0.0, -1.0) * scale + left,
-            Vec2::new(0.0, -3.0) * scale + left,
-            Vec2::new(-2.0, -2.0) * scale + left,
+            Vec2::new(0.0, 1.0) * scale + left,
+            Vec2::new(0.0, 3.0) * scale + left,
+            Vec2::new(-2.0, 2.0) * scale + left,
             LIGHTGRAY
         );
 
         draw_quad(
             Vec2::new(2.0, 0.0) * scale + left,
-            Vec2::new(0.0, -1.0) * scale + left,
-            Vec2::new(0.0, -3.0) * scale + left,
-            Vec2::new(2.0, -2.0) * scale + left,
+            Vec2::new(0.0, 1.0) * scale + left,
+            Vec2::new(0.0, 3.0) * scale + left,
+            Vec2::new(2.0, 2.0) * scale + left,
             DARKGRAY
         );
 
         // true isometric (hopefully)
 
-        // ...
+        let right = Vec2::new(
+            8.0,
+            0.0,
+        ) * scale + center;
+
+        draw_hexagon(
+            right.x,
+            right.y,
+            2.0 * scale,
+            0.0,
+            true,
+            WHITE,
+            WHITE
+        );
+
 
         next_frame().await
     }
