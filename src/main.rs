@@ -84,9 +84,17 @@ async fn main() -> Result<(), ()> { // TODO: error type whenever I actually have
         draw_quad(
             Vec2::new(-(PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
             Vec2::new(0.0, (PI / 6.0).sin()) * 2.0 * scale + right,
-            Vec2::new(0.0, 2.0) * 2.0 * scale + right,
-            Vec2::new(-(PI / 6.0).cos(), (1.0 - (PI / 6.0).sin()) * 2.0) * 2.0 * scale + right,
+            Vec2::new(0.0, 1.0 + (PI / 6.0).sin()) * 2.0 * scale + right,
+            Vec2::new(-(PI / 6.0).cos(), 1.0) * 2.0 * scale + right,
             LIGHTGRAY
+        );
+
+        draw_quad(
+            Vec2::new((PI / 6.0).cos(), 0.0) * 2.0 * scale + right,
+            Vec2::new(0.0, (PI / 6.0).sin()) * 2.0 * scale + right,
+            Vec2::new(0.0, 1.0 + (PI / 6.0).sin()) * 2.0 * scale + right,
+            Vec2::new((PI / 6.0).cos(), 1.0) * 2.0 * scale + right,
+            DARKGRAY
         );
 
         next_frame().await
