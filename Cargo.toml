@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-macroquad = "0.4"
+three_d = "0.18.2"
 functor_derive = "0.4.3"

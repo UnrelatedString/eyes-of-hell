@@ -1,20 +1,62 @@
 use macroquad::prelude::*;
 use functor_derive::Functor;
 
-// OOH OOH todo: occlusion by reified *full rhombus cube faces* because that's really all it needs
-// could be pretty simple since hexagonal tiling is deceptively simple to begin with. all just half offsets and whatnot
-// still allows for stuff that's finer grained than that to just possibly render behind stuff because that is no big deal and the tiling helps determine how they layer anyways. probably. actually no that sucks for like non grid snapped stuff never mind D:
+use std::f32::consts::PI;
+use std::ops;
+pub use Sign::*;
 
-pub trait Drawable {
-    fn draw_colored(&self, color: Color) -> (); // this is too stupid for there to be any way this is what I actually do with other stuff that could impl this but uhhhh yeah
+
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Sign {
+    Pos,
+    Neg,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Functor)]
-pub struct Quad<T>(pub T, pub T, pub T, pub T);
+impl ops::Neg for Sign {
+    type Output = Self;
+    fn neg(self) -> Self {
+        match self {
+            Pos => Neg,
+            Neg => Pos,
+        }
+    }
+}
 
-impl Drawable for Quad<Vec2> {
-    fn draw_colored(&self, color: Color) -> () {
-        draw_triangle(self.0, self.1, self.3, color);
-        draw_triangle(self.1, self.2, self.3, color);
+impl <T: ops::Neg<Output = T>> ops::Mul<T> for Sign {
+    type Output = T;
+    fn mul(self, rhs: T) -> T {
+        match self {
+            Pos => rhs,
+            Neg => -rhs,
+        }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub struct Octant {
+    pub x: Sign,
+    pub y: Sign,
+    pub z: Sign,
+}
+
+impl Octant {
+    pub fn projection(self) -> Mat3A {
+        let alpha = self.y * (PI / 6.0).tan().asin();
+        let beta = match self {
+            Octant{x: Pos, z: Pos, ..} => 3.0,
+            Octant{x: Neg, z: Pos, ..} => 5.0,
+            Octant{x: Neg, z: Neg, ..} => 7.0,
+            Octant{x: Pos, z: Neg, ..} => 1.0,
+        };
+        Mat3A::from_euler(EulerRot::ZXY, 0.0, alpha, beta * PI / 4.0)
+    }
+
+    pub fn project(self, coords: Vec3A) -> Vec2 {
+        let transformed = self.projection() * coords;
+        Vec2::new(
+            transformed.x,
+            transformed.y,
+        )
     }
 }
