@@ -68,6 +68,9 @@ pub async fn run() {
                     ui.add(Slider::new(&mut height, -20.0..=40.0).text("height"));
                     ui.add(Slider::new(&mut zn, 0.0..=40.0).text("z near"));
                     ui.add(Slider::new(&mut zf, 0.0..=40.0).text("z far"));
+                    ui.monospace(
+                        format!("{:?}", camera.projection())
+                    )
                 });
             }
         );
