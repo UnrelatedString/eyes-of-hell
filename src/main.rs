@@ -28,6 +28,7 @@ pub async fn run() {
     let window = Window::new(three_d::WindowSettings {
         title: "Eyes of Hell".to_string(),
         min_size: (1280, 720),
+        initial_size: Some((1280, 720)),
         ..Default::default()
     }).unwrap();
 
@@ -36,7 +37,7 @@ pub async fn run() {
     let camera = Camera::new_orthographic(
         // ooooh what if I make the sides of things tinted by the left and right eyes
         window.viewport(),
-        Vec3::new(20.0, 20.0, 20.0), // just trying stuff to see what actually. does the stuff I want at all
+        Vec3::new(1.0, 1.0, 1.0)*2.0, // just trying stuff to see what actually. does the stuff I want at all
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         20.0,
@@ -58,6 +59,6 @@ pub async fn run() {
             .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0))
             .render(&camera, &[&cube], &[]);
 
-            Default::default()
+        Default::default()
     });
 }
