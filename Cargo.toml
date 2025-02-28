@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-three_d = "0.18.2"
+three-d = "0.18.2"
 functor_derive = "0.4.3"
+tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
+wasm-bindgen = "0.2.100"
