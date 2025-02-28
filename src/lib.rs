@@ -1,6 +1,4 @@
-#![allow(special_module_name)]
-mod main;
-mod util;
+mod meat;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -11,6 +9,6 @@ pub async fn start() -> Result<(), JsValue> {
     console_log::init_with_level(log::Level::Debug).unwrap();
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     
-    main::run().await;
+    meat::run().await;
     Ok(())
 }
