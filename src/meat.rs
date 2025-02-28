@@ -22,10 +22,12 @@ pub async fn run() {
 
     // TODO: keybinds
 
-    let camera = Camera::new_orthographic(
+    let context = &window.gl();
+
+    let mut camera = Camera::new_orthographic(
         // ooooh what if I make the sides of things tinted by the left and right eyes
         window.viewport(),
-        Vec3::new(1.0, 1.0, 1.0)*1.0, // just trying stuff to see what actually. does the stuff I want at all
+        Vec3::new(1.0, 1.0, 1.0),
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         20.0,
@@ -34,18 +36,50 @@ pub async fn run() {
     );
 
     let cube = Gm::new(
-        Mesh::new(&window.gl(), &CpuMesh::cube()),
+        Mesh::new(context, &CpuMesh::cube()),
         ColorMaterial {
             color: Srgba::BLUE,
             ..Default::default()
         },
     );
 
-    window.render_loop (move |frame_input| {
+    // I HAVE NO IDEA WHAT I'M DOING AAAAAA
+    let mut gui = three_d::GUI::new(context);
+    let mut pos_scale = 1.0;
+    let mut height = 20.0;
+    let mut zn = 0.0;
+    let mut zf = 40.0;
+
+    window.render_loop (move |mut frame_input| {
         frame_input
             .screen()
-            .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0))
-            .render(&camera, &[&cube], &[]);
+            .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
+
+        gui.update(
+            &mut frame_input.events,
+            frame_input.accumulated_time,
+            frame_input.viewport,
+            frame_input.device_pixel_ratio,
+            |gui_context| {
+                use three_d::egui;
+                use three_d::egui::Slider;
+                egui::Window::new("camera shit").vscroll(true).show(gui_context, |ui| {
+                    ui.add(Slider::new(&mut pos_scale, 0.0..=10.0).text("position scale"));
+                    ui.add(Slider::new(&mut height, -20.0..=40.0).text("height"));
+                    ui.add(Slider::new(&mut zn, 0.0..=40.0).text("z near"));
+                    ui.add(Slider::new(&mut zf, 0.0..=40.0).text("z far"));
+                });
+            }
+        );
+
+        camera.set_orthographic_projection(height, zn, zf);
+        camera.set_view(
+            Vec3::new(1.0, 1.0, 1.0) * pos_scale,
+            Vec3::new(0.0, 0.0, 0.0),
+            Vec3::new(0.0, 1.0, 0.0),
+        );       
+
+        frame_input.screen().render(&camera, &[&cube], &[]).write(|| gui.render());
 
         Default::default()
     });
