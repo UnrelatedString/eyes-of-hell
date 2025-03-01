@@ -41,3 +41,15 @@ pub const PINK_CUBE: PrismFacePalette = PrismFacePalette {
     ew: ATARI_MIDPINK1,
     top: ATARI_LIGHTPINK,
 };
+
+pub const ATARI_LIGHTAMBER: Srgba = Srgba::new_opaque(0xfc, 0xe0, 0x8c);
+pub const ATARI_MIDAMBER: Srgba = Srgba::new_opaque(0xe8, 0xcc, 0x7c);
+pub const ATARI_DARKAMBER: Srgba = Srgba::new_opaque(0xd0, 0xb4, 0x6c);
+pub const ATARI_NOTREALLYAMBER: Srgba = Srgba::new_opaque(0xb8, 0x9c, 0xf8);
+
+pub const AMBER_CUBE: PrismFacePalette = PrismFacePalette {
+    bottom: ATARI_NOTREALLYAMBER,
+    ns: ATARI_DARKAMBER,
+    ew: ATARI_MIDAMBER,
+    top: ATARI_LIGHTAMBER,
+};

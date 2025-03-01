@@ -18,7 +18,7 @@ mod color;
 mod player;
 mod input;
 
-use crate::meat::color::{ WHITE_CUBE, PINK_CUBE };
+use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
 use crate::meat::geometry:: { AAPrism, pain };
 use crate::meat::player::Player;
 
@@ -59,7 +59,7 @@ pub async fn run() {
     ).gms(&context);
 
     let north = pain(
-        Mat4::from_translation(Vec3::unit_x() * -3.0) * Mat4::from_angle_y(Rad::turn_div_4()),
+        Mat4::from_translation(Vec3::unit_x() * -3.0),// * Mat4::from_angle_y(Rad::turn_div_4()),
         &context,
         Srgba::GREEN,
         false,
@@ -111,6 +111,12 @@ pub async fn run() {
         true,
     );
 
+    let big_floor = AAPrism::new(
+        Vec3::new(1.0, 0.0, 1.0) * -5.0,
+        Vec3::new(1.0, -0.1, 1.0) * 10.0,
+        AMBER_CUBE,
+    ).gms(&context);
+
     let mut player = Player::new();
 
     window.render_loop (move |frame_input| {
@@ -142,6 +148,7 @@ pub async fn run() {
         screen.render(&camera, &ooo, &[]);
         screen.render(&camera, &owo, &[]);
         screen.render(&camera, &lens, &[]);
+        screen.render(&camera, &big_floor, &[]);
 
         screen.render(&camera, &cube, &[]);
         screen.render(&camera, &north, &[]);
