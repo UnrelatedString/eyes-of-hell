@@ -50,27 +50,27 @@ impl AAPrism {
         );
 
         let north = rectangle(
-            top_ne,
+            top_ne - sx * 5.0,
             Vec2::new(size.z, size.y),
             Mat4::identity(),
         );
 
         let south = rectangle(
-            top_ne + sx,
+            top_ne,
             Vec2::new(size.z, size.y),
             Mat4::identity(),
         );
 
         let east = rectangle(
-            top_ne,
+            top_ne - sx * 5.0,
             Vec2::new(size.x, size.y),
-            Mat4::from_angle_y(-Rad::turn_div_4()),
+            Mat4::from_angle_y(Rad::turn_div_4()),
         );
         
         let west = rectangle(
             top_ne + sz,
             Vec2::new(size.x, size.y),
-            Mat4::from_angle_y(-Rad::turn_div_4()),
+            Mat4::from_angle_y(Rad::turn_div_4()),
         );
 
         let bottom = rectangle(
