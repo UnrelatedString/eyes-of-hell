@@ -64,13 +64,13 @@ impl AAPrism {
         let east = rectangle(
             top_ne,
             Vec2::new(size.x, size.y),
-            Mat4::from_angle_z(Rad::turn_div_2()),
+            Mat4::from_angle_y(-Rad::turn_div_4()),
         );
         
         let west = rectangle(
             top_ne + sz,
             Vec2::new(size.x, size.y),
-            Mat4::from_angle_z(Rad::turn_div_2()),
+            Mat4::from_angle_y(-Rad::turn_div_4()),
         );
 
         let bottom = rectangle(
