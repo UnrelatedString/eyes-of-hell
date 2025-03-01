@@ -203,7 +203,6 @@ impl Player {
             } else if wasd.harddown() {
                 self.eye = self.eye.cw().cw();
             }
-            println!("{}", self.wasd);
         } else {
             if wasd.hardup() {
                 self.velocity2 -= Vec2::unit_y();

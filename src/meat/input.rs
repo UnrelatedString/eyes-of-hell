@@ -24,7 +24,7 @@ impl KeyHoldState {
             } if *key == self.key => { self.pressed = true; },
             Event::KeyRelease {
                 kind: key, ..
-            } if *key == self.key => { self.pressed = true; },
+            } if *key == self.key => { self.pressed = false; },
             _ => {}
         }
     }
