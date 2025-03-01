@@ -1,16 +1,28 @@
 use three_d::renderer::control::{Event, Key};
 use functor_derive::Functor;
 
-struct KeyHoldState {
+pub struct KeyHoldState {
     pub key: Key,
     pub pressed: bool,
 }
 
 impl KeyHoldState {
-    fn new(key: Key) -> KeyHoldState {
+    pub fn new(key: Key) -> KeyHoldState {
         KeyHoldState {
             key,
             pressed: false,
+        }
+    }
+
+    pub fn update(&mut self, event: &Event) -> () {
+        match event {
+            Event::KeyPress {
+                kind: key, ..
+            } if *key == self.key => { self.pressed = true; },
+            Event::KeyRelease {
+                kind: key, ..
+            } if *key == self.key => { self.pressed = true; },
+            _ => {}
         }
     }
 }
@@ -25,41 +37,42 @@ pub struct Cardinals<T> {
 
 impl Cardinals<bool> {
 
-    fn hardup(self) -> bool {
+    pub fn hardup(self) -> bool {
         self.up > self.down
     }
 
-    fn harddown(self) -> bool {
+    pub fn harddown(self) -> bool {
         self.up < self.down
     }
 
-    fn hardleft(self) -> bool {
+    pub fn hardleft(self) -> bool {
         self.left > self.right
     }
 
-    fn hardright(self) -> bool {
+    pub fn hardright(self) -> bool {
         self.left < self.right
     }
 
 }
 
 impl Cardinals<KeyHoldState> {
-    fn update(&mut self, event: &Event) -> () {
-        match event {
-            Event::KeyPress {
-                kind: key, ..
-            } if *key == self.key => { self.pressed = true; },
-            Event::KeyRelease {
-                kind: key, ..
-            } if *key == self.key => { self.pressed = true; },
-            _ => {}
-        }
+    pub fn update(&mut self, event: &Event) -> () {
+        self.up.update(event);
+        self.down.update(event);
+        self.left.update(event);
+        self.right.update(event);
     }
 }
 
 impl From<Cardinals<KeyHoldState>> for Cardinals<bool> {
     fn from(states: Cardinals<KeyHoldState>) -> Self {
         states.fmap(|state| state.pressed)
+    }
+}
+
+impl From<&Cardinals<KeyHoldState>> for Cardinals<bool> {
+    fn from(states: &Cardinals<KeyHoldState>) -> Self {
+        (&states).fmap(|state| state.pressed)
     }
 }
 

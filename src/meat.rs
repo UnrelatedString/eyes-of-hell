@@ -19,9 +19,11 @@ mod input;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE };
 use crate::meat::geometry::AAPrism;
+use crate::meat::player::Player;
 
 const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
+const UP_VEC: Vec3 = Vec3::new(0.0, -1.0, 0.0);
 
 pub async fn run() {
     let window = Window::new(three_d::WindowSettings {
@@ -43,7 +45,7 @@ pub async fn run() {
         window.viewport(),
         Vec3::new(1.0, 1.0, 1.0) * DISTANCE,
         Vec3::new(0.0, 0.0, 0.0),
-        Vec3::new(0.0, -1.0, 0.0),
+        UP_VEC,
         SCREEN_HEIGHT_WORLD_UNITS / DISTANCE / 3.0_f32.sqrt(),
         0.0, // maybe make the z bounds by region and, like, automatically use the min/max from neighbors
         DISTANCE * 2.0,
@@ -65,11 +67,17 @@ pub async fn run() {
 
         player.tick(frame_input.elapsed_time);
 
+        camera.set_view(
+            player.pos,
+            player.pos + player.eye * DISTANCE,
+            UP_VEC,
+        );
+
         let pwidth = 0.2;
         let pheight = 0.4;
         let bod = AAPrism::new(
-            Vec3(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
-            Vec3(pwidth, pheight, pwidth),
+            Vec3::new(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
+            Vec3::new(pwidth, pheight, pwidth),
             PINK_CUBE,
         ).gms(&context);
 

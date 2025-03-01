@@ -40,4 +40,4 @@ pub const PINK_CUBE: PrismFacePalette = PrismFacePalette {
     ns: ATARI_MIDPINK2,
     ew: ATARI_MIDPINK1,
     top: ATARI_LIGHTPINK,
-}
+};

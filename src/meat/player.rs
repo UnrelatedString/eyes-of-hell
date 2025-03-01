@@ -36,9 +36,9 @@ impl <T: ops::Neg<Output = T>> ops::Mul<T> for Sign {
     }
 }
 
-impl <S: One + ops::Neg<Output = S>> From<Sign> for S {
-    fn from(sign: Sign) -> S {
-        One::one() * sign
+impl From<Sign> for f32 {
+    fn from(sign: Sign) -> f32 {
+        sign * 1.0
     }
 }
 
@@ -50,42 +50,53 @@ pub struct Octant {
 
 impl Octant {
 
-    fn from_quadrant(q: Quadrant, vertical: Sign) -> Self {
+    pub fn from_quadrant(q: Quadrant, vertical: Sign) -> Self {
         Octant { q, vertical }
     }
 
-    fn cw(self) -> Self {
-        Octant { q: self.q.cw(), vertical }
+    pub fn cw(self) -> Self {
+        Octant { q: self.q.cw(), ..self }
     }
 
-    fn ccw(self) -> Self {
-        Octant { q: self.q.ccw(), vertical }
+    pub fn ccw(self) -> Self {
+        Octant { q: self.q.ccw(), ..self }
     }
 
-    fn x(self) -> Sign {
+    pub fn x(self) -> Sign {
         self.q.x()
     }
 
-    fn y(self) -> Sign {
+    pub fn y(self) -> Sign {
         self.vertical
     }
 
-    fn z(self) -> Sign {
+    pub fn z(self) -> Sign {
         self.q.z()
     }
 
-    fn quadrant(self) -> Quadrant {
+    pub fn quadrant(self) -> Quadrant {
         self.q
     }
 
 }
 
-impl <S: One + ops::Neg<Output>> From<Octant> for Vector3<S> {
-    fn from(oct: Octant) -> Vector3<S> {
-        Vector3::new(
+impl From<Octant> for Vec3 {
+    fn from(oct: Octant) -> Vec3 {
+        Vec3::new(
             oct.x().into(),
             oct.y().into(),
             oct.z().into(),
+        )
+    }
+}
+
+impl <T: ops::Neg<Output = T>> ops::Mul<T> for Octant {
+    type Output = Vector3<T>;
+    fn mul(self, rhs: T) -> Vector3<T> {
+        Vector3::<T>::new(
+            self.x() * rhs,
+            self.y() * rhs,
+            self.x() * rhs,
         )
     }
 }
@@ -100,7 +111,7 @@ pub enum Quadrant {
 
 impl Quadrant {
 
-    fn cw(self) -> Self {
+    pub fn cw(self) -> Self {
         use Quadrant::*;
         match self {
             NE => SE,
@@ -110,7 +121,7 @@ impl Quadrant {
         }
     }
 
-    fn ccw(self) -> Self {
+    pub fn ccw(self) -> Self {
         use Quadrant::*;
         match self {
             NE => NW,
@@ -120,26 +131,28 @@ impl Quadrant {
         }
     }
 
-    fn x(self) -> Sign {
+    pub fn x(self) -> Sign {
+        use Quadrant::*;
         match self {
             NE | NW => Pos,
             SE | SW => Neg
         }
     }
 
-    fn z(self) -> Sign {
+    pub fn z(self) -> Sign {
+        use Quadrant::*;
         match self {
             NE | SE => Pos,
             NW | SW => Neg
         }
     }
 
-    fn input_to_spatial(self, input: Vec2) -> Vec3 {
+    pub fn input_to_spatial(self, input: Vec2) -> Vec3 {
         // just bullshitting this for now lol
         let raw = Vec3::new(
-            input.x * self.x() - input.y * self.z(),
+            self.x() * input.x - self.z() * input.y,
             0.0,
-            input.y * self.z() - input.x * self.x(),
+            self.z() * input.y - self.x() * input.x,
         );
         if raw.is_zero() {
             raw
@@ -151,7 +164,7 @@ impl Quadrant {
 
 // I wanted to originally have a struct Controls that was decoupled from
 // other player state, but nahhh that would not be clean
-struct Player {
+pub struct Player {
     pub eye: Octant,
     pub pos: Vec3,
     wasd: Cardinals<KeyHoldState>,
@@ -162,7 +175,7 @@ impl Player {
     // Units per *milli*second!
     const SPEED: f32 = 0.005;
 
-    fn new() -> Player {
+    pub fn new() -> Player {
         Player {
             eye: Octant::from_quadrant(Quadrant::NE, Pos),
             pos: Vec3::new(0.0, 0.0, 0.0),
@@ -171,16 +184,17 @@ impl Player {
                 down: KeyHoldState::new(Key::S),
                 left: KeyHoldState::new(Key::A),
                 right: KeyHoldState::new(Key::D),
-            }
+            },
+            velocity2: Vec2::zero(),
         }
     }
 
-    fn update(&mut self, event: &Event) {
+    pub fn update(&mut self, event: &Event) {
         self.velocity2 = Vec2::new(0.0, 0.0);
         self.wasd.update(event);
-        wasd: Cardinals<bool> = self.wasd.into();
+        let wasd: Cardinals<bool> = (&self.wasd).into();
 
-        if was_pressed(Key::K, event) {
+        if was_pressed(event, Key::K) {
             if wasd.hardleft() {
                 self.eye = self.eye.cw();  
             } else if wasd.hardright() {
@@ -202,11 +216,10 @@ impl Player {
                 self.velocity2 += Vec2::unit_x();
             }
         }
+    }
 
-        fn tick(&mut self, delta: f64) {
-            self.pos += self.eye.quadrant().input_to_spatial(self.velocity2) * delta * Player::SPEED;
-        }
-
+    pub fn tick(&mut self, delta: f64) {
+        self.pos += self.eye.quadrant().input_to_spatial(self.velocity2) * (delta as f32) * Player::SPEED;
     }
 }
 
