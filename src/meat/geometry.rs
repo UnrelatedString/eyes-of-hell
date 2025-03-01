@@ -11,13 +11,14 @@ use three_d::{
 
 use crate::meat::color::PrismFacePalette;
 
-pub fn pain(transform: Mat4, context: &Context, color: Srgba) -> Gm<Mesh, ColorMaterial> {
+pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bool) -> Gm<Mesh, ColorMaterial> {
     let mut excrement = CpuMesh::circle(7);
     excrement.transform(transform).unwrap();
     Gm::new(
         Mesh::new(context, &excrement),
         ColorMaterial {
             color,
+            is_transparent,
             ..Default::default()
         }
     )

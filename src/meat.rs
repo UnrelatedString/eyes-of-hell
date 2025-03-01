@@ -62,24 +62,28 @@ pub async fn run() {
         Mat4::from_translation(Vec3::unit_x() * -3.0) * Mat4::from_angle_y(Rad::turn_div_4()),
         &context,
         Srgba::GREEN,
+        false,
     );
 
     let west = pain(
         Mat4::from_translation(Vec3::unit_z() * 3.0),
         &context,
         Srgba::BLUE,
+        false,
     );
 
     let up = pain(
         Mat4::from_translation(UP_VEC * 3.0) * Mat4::from_angle_x(Rad::turn_div_4()),
         &context,
         Srgba::RED,
+        false,
     );
 
     let fakeup = pain(
         Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0) * 3.0) * Mat4::from_translation(UP_VEC * 3.0) * Mat4::from_angle_x(Rad::turn_div_4()),
         &context,
         Srgba::WHITE,
+        false
     );
 
     let east = AAPrism::new(
@@ -87,6 +91,13 @@ pub async fn run() {
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
+
+    let ooo = pain(
+        Mat4::from_scale(7.0),
+        &context,
+        Srgba::new(150, 100, 100, 50),
+        true,
+    );
 
     let mut player = Player::new();
 
@@ -116,6 +127,7 @@ pub async fn run() {
         let screen = frame_input.screen();
         screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
 
+        screen.render(&camera, &ooo, &[]);
         screen.render(&camera, &cube, &[]);
         screen.render(&camera, &north, &[]);
         screen.render(&camera, &west, &[]);
