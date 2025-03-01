@@ -95,7 +95,7 @@ pub async fn run() {
     let ooo = pain(
         Mat4::from_scale(7.0),
         &context,
-        Srgba::new(150, 100, 100, 50),
+        Srgba::new(150, 100, 100, 127),
         true,
     );
 

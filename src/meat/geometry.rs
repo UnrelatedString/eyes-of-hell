@@ -7,6 +7,9 @@ use three_d::{
     Context,
     ColorMaterial,
     Srgba,
+    RenderStates,
+    WriteMask,
+    Blend,
 };
 
 use crate::meat::color::PrismFacePalette;
@@ -18,8 +21,17 @@ pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bo
         Mesh::new(context, &excrement),
         ColorMaterial {
             color,
+            texture: None,
+            render_states: if is_transparent {
+                RenderStates {
+                    blend: Blend::TRANSPARENCY,
+                    write_mask: WriteMask::COLOR,
+                    ..Default::default()
+                }
+            } else {
+                Default::default()
+            },
             is_transparent,
-            ..Default::default()
         }
     )
 }
