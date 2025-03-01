@@ -13,14 +13,14 @@ use crate::meat::color::PrismFacePalette;
 fn rectangle(top_ne: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
-        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
-        Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
-        rotation_from_xy *
-        Mat4::from_translation(top_ne)
-        // Mat4::from_translation(top_ne) *
-        // rotation_from_xy *
+        // Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
         // Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
-        // Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0))
+        // rotation_from_xy *
+        // Mat4::from_translation(top_ne)
+        Mat4::from_translation(top_ne) *
+        rotation_from_xy *
+        Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
+        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0))
     ).unwrap();
     ret
 }
@@ -46,7 +46,7 @@ impl AAPrism {
         let top = rectangle(
             top_ne,
             Vec2::new(size.x, size.z), // I cry when no swizzles
-            Mat4::from_angle_z(Rad::turn_div_4()),
+            Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
         let north = rectangle(
@@ -76,7 +76,7 @@ impl AAPrism {
         let bottom = rectangle(
             top_ne + sy,
             Vec2::new(size.x, size.z),
-            Mat4::from_angle_z(Rad::turn_div_4()),
+            Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
         AAPrism {
