@@ -47,19 +47,17 @@ pub async fn run() {
         DISTANCE * 2.0,
     );
 
-    let cube = Gm::new(
-        Mesh::new(context, &CpuMesh::cube()),
-        ColorMaterial {
-            color: Srgba::BLUE,
-            ..Default::default()
-        },
-    );
+    let cube = AAPrism::new(
+        Vec3::new(-1.0, -1.0, -1.0),
+        Vec3::new(2.0, 2.0, 2.0),
+        WHITE_CUBE,
+    ).gms(&context);
 
     window.render_loop (move |mut frame_input| {
         frame_input
             .screen()
             .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0))
-            .render(&camera, &[&cube], &[]);
+            .render(&camera, &cube, &[]);
 
         Default::default()
     });
