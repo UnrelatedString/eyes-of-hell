@@ -1,5 +1,6 @@
-use three_d::renderer::Camera;
+use three_d::renderer::{ Camera, Viewer, Light };
 use three_d::renderer::control::{Event, Key};
+use three_d::renderer::object::Object;
 use three_d::core::prelude::*;
 use functor_derive::Functor;
 use num_traits::identities::One;
@@ -62,10 +63,7 @@ impl Octant {
     }
 
     fn x(self) -> Sign {
-        match self.q {
-            NE | NW => Pos,
-            SE | SW => Neg
-        }
+        self.q.x()
     }
 
     fn y(self) -> Sign {
@@ -73,10 +71,11 @@ impl Octant {
     }
 
     fn z(self) -> Sign {
-        match self.q {
-            NE | SE => Pos,
-            NW | SW => Neg
-        }
+        self.q.z()
+    }
+
+    fn quadrant(self) -> Quadrant {
+        self.q
     }
 
 }
@@ -121,23 +120,48 @@ impl Quadrant {
         }
     }
 
-    
+    fn x(self) -> Sign {
+        match self {
+            NE | NW => Pos,
+            SE | SW => Neg
+        }
+    }
 
-    // flipping this for verticality would probably be more unintuitive anyways lol
-    fn screen_up(self) -> Vec3 {
+    fn z(self) -> Sign {
+        match self {
+            NE | SE => Pos,
+            NW | SW => Neg
+        }
+    }
 
+    fn input_to_spatial(self, input: Vec2) -> Vec3 {
+        // just bullshitting this for now lol
+        let raw = Vec3::new(
+            input.x * self.x() - input.y * self.z(),
+            0.0,
+            input.y * self.z() - input.x * self.x(),
+        );
+        if raw.is_zero() {
+            raw
+        } else {
+            raw.normalize()
+        }
     }
 }
 
 // I wanted to originally have a struct Controls that was decoupled from
 // other player state, but nahhh that would not be clean
 struct Player {
-    eye: Octant,
-    pos: Vec3,
+    pub eye: Octant,
+    pub pos: Vec3,
     wasd: Cardinals<KeyHoldState>,
+    velocity2: Vec2,
 }
 
 impl Player {
+    // Units per *milli*second!
+    const SPEED: f32 = 0.005;
+
     fn new() -> Player {
         Player {
             eye: Octant::from_quadrant(Quadrant::NE, Pos),
@@ -151,7 +175,8 @@ impl Player {
         }
     }
 
-    fn update(&mut self, event: &Event, delta: f32) {
+    fn update(&mut self, event: &Event) {
+        self.velocity2 = Vec2::new(0.0, 0.0);
         self.wasd.update(event);
         wasd: Cardinals<bool> = self.wasd.into();
 
@@ -164,16 +189,29 @@ impl Player {
                 self.eye = self.eye.cw().cw();
             }
         } else {
-            let mut velocity = Vec3::new(0.0, 0.0, 0.0);
-
             if wasd.hardup() {
-                velocity += 
+                self.velocity2 -= Vec2::unit_y();
             }
+            if wasd.harddown() {
+                self.velocity2 += Vec2::unit_y();
+            }
+            if wasd.hardleft() {
+                self.velocity2 -= Vec2::unit_x();
+            }
+            if wasd.hardright() {
+                self.velocity2 += Vec2::unit_x();
+            }
+        }
 
-            if !velocity.is_zero() {
-                velocity = velocity.normalize();
-            }
+        fn tick(&mut self, delta: f64) {
+            self.pos += self.eye.quadrant().input_to_spatial(self.velocity2) * delta * Player::SPEED;
         }
 
     }
 }
+
+// impl Object for Player {
+//     fn render(&self, viewer: &dyn Viewer, lights: &[&dyn Light]) -> () {
+
+//     }
+// }

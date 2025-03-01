@@ -17,7 +17,7 @@ mod color;
 mod player;
 mod input;
 
-use crate::meat::color::WHITE_CUBE;
+use crate::meat::color::{ WHITE_CUBE, PINK_CUBE };
 use crate::meat::geometry::AAPrism;
 
 const DISTANCE: f32 = 200.0;
@@ -55,11 +55,29 @@ pub async fn run() {
         WHITE_CUBE,
     ).gms(&context);
 
-    window.render_loop (move |mut frame_input| {
+    let mut player = Player::new();
+
+    window.render_loop (move |frame_input| {
+
+        for event in &frame_input.events {
+            player.update(event);
+        }
+
+        player.tick(frame_input.elapsed_time);
+
+        let pwidth = 0.2;
+        let pheight = 0.4;
+        let bod = AAPrism::new(
+            Vec3(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
+            Vec3(pwidth, pheight, pwidth),
+            PINK_CUBE,
+        ).gms(&context);
+
         frame_input
             .screen()
             .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0))
             .render(&camera, &cube, &[]);
+        frame_input.screen().render(&camera, &bod, &[]);
 
         Default::default()
     });
