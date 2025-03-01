@@ -52,13 +52,13 @@ impl AAPrism {
         let north = rectangle(
             top_ne,
             Vec2::new(size.z, size.y),
-            Mat4::from_angle_x(Rad::turn_div_2()),
+            Mat4::identity(),
         );
 
         let south = rectangle(
             top_ne + sx,
             Vec2::new(size.z, size.y),
-            Mat4::from_angle_x(Rad::turn_div_2()),
+            Mat4::identity(),
         );
 
         let east = rectangle(
@@ -74,7 +74,7 @@ impl AAPrism {
         );
 
         let bottom = rectangle(
-            top_ne + sy,
+            top_ne + sy * 5.0,
             Vec2::new(size.x, size.z),
             Mat4::from_angle_x(Rad::turn_div_4()),
         );
@@ -92,7 +92,7 @@ impl AAPrism {
         }
     }
 
-    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 2] {[
+    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {[
         Gm::new(
             Mesh::new(context, &self.top),
             ColorMaterial {
@@ -101,51 +101,40 @@ impl AAPrism {
             },
         ),
         Gm::new(
-            Mesh::new(context, &rectangle(
-                self.top_ne,
-                Vec2::new(self.size.z, self.size.y),
-                Mat4::identity(),
-            )),
+            Mesh::new(context, &self.north),
             ColorMaterial {
                 color: self.palette.ns,
                 ..Default::default()
             },
         ),
-        // Gm::new(
-        //     Mesh::new(context, &self.north),
-        //     ColorMaterial {
-        //         color: self.palette.ns,
-        //         ..Default::default()
-        //     },
-        // ),
-        // Gm::new(
-        //     Mesh::new(context, &self.south),
-        //     ColorMaterial {
-        //         color: self.palette.ns,
-        //         ..Default::default()
-        //     },
-        // ),
-        // Gm::new(
-        //     Mesh::new(context, &self.east),
-        //     ColorMaterial {
-        //         color: self.palette.ew,
-        //         ..Default::default()
-        //     },
-        // ),
-        // Gm::new(
-        //     Mesh::new(context, &self.west),
-        //     ColorMaterial {
-        //         color: self.palette.ew,
-        //         ..Default::default()
-        //     },
-        // ),
-        // Gm::new(
-        //     Mesh::new(context, &self.bottom),
-        //     ColorMaterial {
-        //         color: self.palette.bottom,
-        //         ..Default::default()
-        //     },
-        // ),
+        Gm::new(
+            Mesh::new(context, &self.south),
+            ColorMaterial {
+                color: self.palette.ns,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.east),
+            ColorMaterial {
+                color: self.palette.ew,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.west),
+            ColorMaterial {
+                color: self.palette.ew,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.bottom),
+            ColorMaterial {
+                color: self.palette.bottom,
+                ..Default::default()
+            },
+        ),
     ]}
 }
 
