@@ -14,7 +14,7 @@ fn rectangle(top_ne: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
         Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
-        Mat4::from_nonuniform_scale(size.x, size.y, 1.0) *
+        Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
         rotation_from_xy *
         Mat4::from_translation(top_ne)
         // Mat4::from_translation(top_ne) *
@@ -92,11 +92,22 @@ impl AAPrism {
         }
     }
 
-    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 1] {[
+    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 2] {[
         Gm::new(
             Mesh::new(context, &self.top),
             ColorMaterial {
                 color: self.palette.top,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &rectangle(
+                self.top_ne,
+                Vec2::new(self.size.z, self.size.y),
+                Mat4::identity(),
+            )),
+            ColorMaterial {
+                color: self.palette.ns,
                 ..Default::default()
             },
         ),
