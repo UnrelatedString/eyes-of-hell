@@ -14,11 +14,13 @@ use three_d::{
 
 mod geometry;
 mod color;
+mod player;
+mod input;
 
 use crate::meat::color::WHITE_CUBE;
 use crate::meat::geometry::AAPrism;
 
-const DISTANCE: f32 = 20.0;
+const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 
 pub async fn run() {
