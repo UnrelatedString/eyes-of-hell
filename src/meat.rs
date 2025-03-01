@@ -76,6 +76,12 @@ pub async fn run() {
         Srgba::RED,
     );
 
+    let fakeup = pain(
+        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0) * 3.0) * Mat4::from_translation(UP_VEC * 3.0) * Mat4::from_angle_x(Rad::turn_div_4()),
+        &context,
+        Srgba::WHITE,
+    );
+
     let east = AAPrism::new(
         Vec3::new(-0.5, -0.5, -3.5),
         Vec3::new(1.0, 1.0, 1.0),
@@ -114,6 +120,7 @@ pub async fn run() {
         screen.render(&camera, &north, &[]);
         screen.render(&camera, &west, &[]);
         screen.render(&camera, &up, &[]);
+        screen.render(&camera, &fakeup, &[]);
         screen.render(&camera, &east, &[]);
         screen.render(&camera, &bod, &[]);
 
