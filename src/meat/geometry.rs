@@ -13,10 +13,10 @@ use crate::meat::color::PrismFacePalette;
 fn rectangle(top_ne: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
-        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
-        Mat4::from_nonuniform_scale(size.x, size.y, 1.0) *
+        Mat4::from_translation(top_ne) *
         rotation_from_xy *
-        Mat4::from_translation(top_ne)
+        Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
+        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0))
     ).unwrap();
     ret
 }
