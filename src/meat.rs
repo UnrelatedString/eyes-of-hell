@@ -15,6 +15,9 @@ use three_d::{
 mod geometry;
 mod color;
 
+use crate::meat::color::WHITE_CUBE;
+use crate::meat::geometry::AAPrism;
+
 const DISTANCE: f32 = 20.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 
