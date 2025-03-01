@@ -24,7 +24,7 @@ use crate::meat::player::Player;
 
 const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
-const UP_VEC: Vec3 = Vec3::new(0.0, -1.0, 0.0);
+const UP_VEC: Vec3 = Vec3::new(0.0, 1.0, 0.0);
 
 pub async fn run() {
     let window = Window::new(three_d::WindowSettings {
@@ -58,20 +58,6 @@ pub async fn run() {
         WHITE_CUBE,
     ).gms(&context);
 
-    let north = pain(
-        Mat4::from_translation(Vec3::unit_x() * -3.0),// * Mat4::from_angle_y(Rad::turn_div_4()),
-        &context,
-        Srgba::GREEN,
-        false,
-    );
-
-    let west = pain(
-        Mat4::from_translation(Vec3::unit_z() * 3.0),
-        &context,
-        Srgba::BLUE,
-        false,
-    );
-
     let up = pain(
         Mat4::from_translation(UP_VEC * 3.0) * Mat4::from_angle_x(Rad::turn_div_4()),
         &context,
@@ -91,25 +77,6 @@ pub async fn run() {
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
-
-    let ooo = pain(
-        Mat4::from_scale(7.0),
-        &context,
-        Srgba::new(150, 100, 100, 127),
-        true,
-    );
-    let owo = pain(
-        Mat4::from_scale(7.0) * Mat4::from_angle_x(Rad::turn_div_4()),
-        &context,
-        Srgba::new(100, 100, 200, 127),
-        true,
-    );
-    let lens = pain(
-        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0) * 30.0) * Mat4::look_at_rh(Point3::<f32>::from_vec(Vec3::unit_z()), Point3::<f32>::from_vec(Vec3::new(1.0, 1.0, 1.0)), UP_VEC),
-        &context,
-        Srgba::new(200, 20, 50, 180),
-        true,
-    );
 
     let big_floor = AAPrism::new(
         Vec3::new(1.0, 0.0, 1.0) * -5.0,
@@ -145,14 +112,9 @@ pub async fn run() {
         let screen = frame_input.screen();
         screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
 
-        screen.render(&camera, &ooo, &[]);
-        screen.render(&camera, &owo, &[]);
-        screen.render(&camera, &lens, &[]);
         screen.render(&camera, &big_floor, &[]);
 
         screen.render(&camera, &cube, &[]);
-        screen.render(&camera, &north, &[]);
-        screen.render(&camera, &west, &[]);
         screen.render(&camera, &up, &[]);
         screen.render(&camera, &fakeup, &[]);
         screen.render(&camera, &east, &[]);
