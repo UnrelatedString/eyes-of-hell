@@ -78,26 +78,27 @@ impl Octant {
         self.q
     }
 
+    pub fn map<T, F>(self, mut f: F) -> Vector3<T>
+        where F: FnMut(Sign) -> T
+    {
+        Vector3::<T>::new(
+            f(self.x()),
+            f(self.y()),
+            f(self.z()),
+        )
+    }
 }
 
 impl From<Octant> for Vec3 {
     fn from(oct: Octant) -> Vec3 {
-        Vec3::new(
-            oct.x().into(),
-            oct.y().into(),
-            oct.z().into(),
-        )
+        oct.map(|a| a.into())
     }
 }
 
 impl <T: Copy + ops::Neg<Output = T>> ops::Mul<T> for Octant {
     type Output = Vector3<T>;
     fn mul(self, rhs: T) -> Vector3<T> {
-        Vector3::<T>::new(
-            self.x() * rhs,
-            self.y() * rhs,
-            self.x() * rhs,
-        )
+        self.map(|a| a * rhs)
     }
 }
 
@@ -203,8 +204,6 @@ impl Player {
             } else if wasd.harddown() {
                 self.eye = self.eye.cw().cw();
             }
-            println!("{:?} {:?}{:?}{:?}", self.eye, self.eye.x(), self.eye.y(),self.eye.z());
-            println!("{:?}", self.eye * 1.0);
         } else {
             if wasd.hardup() {
                 self.velocity2 -= Vec2::unit_y();
