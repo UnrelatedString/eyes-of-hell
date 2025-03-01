@@ -10,6 +10,17 @@ use three_d::{
 
 use crate::meat::color::PrismFacePalette;
 
+fn rectangle(top_ne: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
+    let mut ret = CpuMesh::square();
+    ret.transform(
+        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
+        Mat4::from_nonuniform_scale(size.x, size.y, 1.0) *
+        rotation_from_xy *
+        Mat4::from_translation(top_ne)
+    ).unwrap();
+    ret
+}
+
 pub struct AAPrism {
     top_ne: Vec3, // Point3<f32>,
     size: Vec3,
@@ -24,52 +35,45 @@ pub struct AAPrism {
 
 impl AAPrism {
     pub fn new(top_ne: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrism {
-        let sx = Vec3::new(size.x, 0.0, 0.0); // size * Vec3::unit_x();
-        let sy = Vec3::new(0.0, size.y, 0.0); // size * Vec3::unit_y();
-        let sz = Vec3::new(0.0, 0.0, size.z); // size * Vec3::unit_z();
+        let sx = Vec3::new(size.x, 0.0, 0.0);
+        let sy = Vec3::new(0.0, size.y, 0.0);
+        let sz = Vec3::new(0.0, 0.0, size.z);
 
-        let top = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne, top_ne + sz,
-                top_ne + sz + sx, top_ne + sx,
-            ]),
-            ..Default::default()
-        };
-        let north = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne, top_ne + sz,
-                top_ne + sz + sy, top_ne + sy,
-            ]),
-            ..Default::default()
-        };
-        let south = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne + sx, top_ne + sx + sz,
-                top_ne + size, top_ne + sx + sy,
-            ]),
-            ..Default::default()
-        };
-        let east = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne, top_ne + sx,
-                top_ne + sx + sy, top_ne + sy,
-            ]),
-            ..Default::default()
-        };
-        let west = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne + sz, top_ne + sx + sz,
-                top_ne + size, top_ne + sy + sz,
-            ]),
-            ..Default::default()
-        };
-        let bottom = CpuMesh {
-            positions: Positions::F32(vec![
-                top_ne + sy, top_ne + sy + sz,
-                top_ne + size, top_ne + sx + sy,
-            ]),
-            ..Default::default()
-        };
+        let top = rectangle(
+            top_ne,
+            Vec2::new(size.x, size.z), // I cry when no swizzles
+            Mat4::from_angle_z(Rad::turn_div_4()),
+        );
+
+        let north = rectangle(
+            top_ne,
+            Vec2::new(size.z, size.y),
+            Mat4::from_angle_x(Rad::turn_div_2()),
+        );
+
+        let south = rectangle(
+            top_ne + sx,
+            Vec2::new(size.z, size.y),
+            Mat4::from_angle_x(Rad::turn_div_2()),
+        );
+
+        let east = rectangle(
+            top_ne,
+            Vec2::new(size.x, size.y),
+            Mat4::from_angle_z(Rad::turn_div_2()),
+        );
+        
+        let west = rectangle(
+            top_ne + sz,
+            Vec2::new(size.x, size.y),
+            Mat4::from_angle_z(Rad::turn_div_2()),
+        );
+
+        let bottom = rectangle(
+            top_ne + sy,
+            Vec2::new(size.x, size.z),
+            Mat4::from_angle_z(Rad::turn_div_4()),
+        );
 
         AAPrism {
             top_ne,
@@ -84,14 +88,49 @@ impl AAPrism {
         }
     }
 
-    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 1] {[
+    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {[
         Gm::new(
             Mesh::new(context, &self.top),
             ColorMaterial {
                 color: self.palette.top,
                 ..Default::default()
             },
-        )
+        ),
+        Gm::new(
+            Mesh::new(context, &self.north),
+            ColorMaterial {
+                color: self.palette.ns,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.south),
+            ColorMaterial {
+                color: self.palette.ns,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.east),
+            ColorMaterial {
+                color: self.palette.ew,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.west),
+            ColorMaterial {
+                color: self.palette.ew,
+                ..Default::default()
+            },
+        ),
+        Gm::new(
+            Mesh::new(context, &self.bottom),
+            ColorMaterial {
+                color: self.palette.bottom,
+                ..Default::default()
+            },
+        ),
     ]}
 }
 
