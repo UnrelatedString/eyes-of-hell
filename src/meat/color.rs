@@ -28,4 +28,4 @@ pub const WHITE_CUBE: PrismFacePalette = PrismFacePalette {
     ns: ATARI_MIDGRAY,
     ew: ATARI_LIGHTGRAY,
     top: ATARI_WHITE,
-}
+};
