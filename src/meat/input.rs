@@ -1,6 +1,9 @@
 use three_d::renderer::control::{Event, Key};
 use functor_derive::Functor;
+use std::fmt::{ Display, Formatter };
+use std::fmt;
 
+#[derive(Debug)]
 pub struct KeyHoldState {
     pub key: Key,
     pub pressed: bool,
@@ -23,6 +26,17 @@ impl KeyHoldState {
                 kind: key, ..
             } if *key == self.key => { self.pressed = true; },
             _ => {}
+        }
+    }
+}
+
+impl Display for KeyHoldState {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        if self.pressed {
+            write!(f, "[{:?}]", self.key)
+        } else {
+            // I kinda want to make the space fit the whole name but I'm not using that rn so
+            write!(f, "[ ]")
         }
     }
 }
@@ -61,6 +75,12 @@ impl Cardinals<KeyHoldState> {
         self.down.update(event);
         self.left.update(event);
         self.right.update(event);
+    }
+}
+
+impl <T: Display> Display for Cardinals<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{}{}{}", self.up, self.left, self.down, self.right)
     }
 }
 

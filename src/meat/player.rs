@@ -164,6 +164,7 @@ impl Quadrant {
 
 // I wanted to originally have a struct Controls that was decoupled from
 // other player state, but nahhh that would not be clean
+#[derive(Debug)]
 pub struct Player {
     pub eye: Octant,
     pub pos: Vec3,
@@ -202,6 +203,7 @@ impl Player {
             } else if wasd.harddown() {
                 self.eye = self.eye.cw().cw();
             }
+            println!("{}", self.wasd);
         } else {
             if wasd.hardup() {
                 self.velocity2 -= Vec2::unit_y();
