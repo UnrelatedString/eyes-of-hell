@@ -12,6 +12,8 @@ use three_d::{
 
 // To be treated as the *actual* root module because of multiple entry point jank
 
+mod geometry;
+
 const DISTANCE: f32 = 20.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 
@@ -34,7 +36,7 @@ pub async fn run() {
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
         SCREEN_HEIGHT_WORLD_UNITS / DISTANCE / 3.0_f32.sqrt(),
-        0.0,
+        0.0, // maybe make the z bounds by region and, like, automatically use the min/max from neighbors
         DISTANCE * 2.0,
     );
 
