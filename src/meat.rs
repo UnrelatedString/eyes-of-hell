@@ -13,6 +13,7 @@ use three_d::{
 // To be treated as the *actual* root module because of multiple entry point jank
 
 mod geometry;
+mod color;
 
 const DISTANCE: f32 = 20.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
@@ -20,7 +21,7 @@ const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 pub async fn run() {
     let window = Window::new(three_d::WindowSettings {
         title: "Eyes of Hell".to_string(),
-        min_size: (1280, 720),
+        min_size: (720, 480),
         initial_size: Some((1280, 720)),
         ..Default::default()
     }).unwrap();
@@ -29,6 +30,9 @@ pub async fn run() {
 
     let context = &window.gl();
 
+
+    // TODO: way way past MVP, make a custom Viewer that can smoothly transition between
+    // orthographic and perspective. just for shits and giggles
     let mut camera = Camera::new_orthographic(
         // ooooh what if I make the sides of things tinted by the left and right eyes
         window.viewport(),
