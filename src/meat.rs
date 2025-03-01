@@ -104,6 +104,12 @@ pub async fn run() {
         Srgba::new(100, 100, 200, 127),
         true,
     );
+    let lens = pain(
+        Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0) * 30.0) * Mat4::look_at_rh(Point3::<f32>::from_vec(Vec3::unit_z()), Point3::<f32>::from_vec(Vec3::new(1.0, 1.0, 1.0)), UP_VEC),
+        &context,
+        Srgba::new(200, 20, 50, 180),
+        true,
+    );
 
     let mut player = Player::new();
 
@@ -135,6 +141,8 @@ pub async fn run() {
 
         screen.render(&camera, &ooo, &[]);
         screen.render(&camera, &owo, &[]);
+        screen.render(&camera, &lens, &[]);
+
         screen.render(&camera, &cube, &[]);
         screen.render(&camera, &north, &[]);
         screen.render(&camera, &west, &[]);
