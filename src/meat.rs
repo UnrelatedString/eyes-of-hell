@@ -58,6 +58,18 @@ pub async fn run() {
         WHITE_CUBE,
     ).gms(&context);
 
+    let north = AAPrism::new(
+        Vec3::new(-5.5, -0.5, -0.5),
+        Vec3::new(1.0, 1.0, 1.0),
+        PINK_CUBE,
+    ).gms(&context);
+
+    let east = AAPrism::new(
+        Vec3::new(-0.5, -0.5, -5.5),
+        Vec3::new(1.0, 1.0, 1.0),
+        PINK_CUBE,
+    ).gms(&context);
+
     let mut player = Player::new();
 
     window.render_loop (move |frame_input| {
@@ -82,11 +94,14 @@ pub async fn run() {
             PINK_CUBE,
         ).gms(&context);
 
-        frame_input
-            .screen()
-            .clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0))
-            .render(&camera, &cube, &[]);
-        frame_input.screen().render(&camera, &bod, &[]);
+
+        let screen = frame_input.screen();
+        screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
+
+        screen.render(&camera, &cube, &[]);
+        screen.render(&camera, &north, &[]);
+        screen.render(&camera, &east, &[]);
+        screen.render(&camera, &bod, &[]);
 
         Default::default()
     });
