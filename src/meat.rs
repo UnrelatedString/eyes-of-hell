@@ -8,6 +8,7 @@ use three_d::{
     ColorMaterial,
     Srgba,
     ClearState,
+    Context,
 };
 
 // To be treated as the *actual* root module because of multiple entry point jank
@@ -35,7 +36,7 @@ pub async fn run() {
 
     // TODO: keybinds
 
-    let context = &window.gl();
+    let context = window.gl();
 
 
     // TODO: way way past MVP, make a custom Viewer that can smoothly transition between

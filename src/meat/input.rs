@@ -72,7 +72,12 @@ impl From<Cardinals<KeyHoldState>> for Cardinals<bool> {
 
 impl From<&Cardinals<KeyHoldState>> for Cardinals<bool> {
     fn from(states: &Cardinals<KeyHoldState>) -> Self {
-        (&states).fmap(|state| state.pressed)
+        Cardinals {
+            up: states.up.pressed,
+            down: states.down.pressed,
+            left: states.left.pressed,
+            right: states.right.pressed,
+        }
     }
 }
 

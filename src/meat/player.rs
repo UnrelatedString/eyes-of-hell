@@ -90,7 +90,7 @@ impl From<Octant> for Vec3 {
     }
 }
 
-impl <T: ops::Neg<Output = T>> ops::Mul<T> for Octant {
+impl <T: Copy + ops::Neg<Output = T>> ops::Mul<T> for Octant {
     type Output = Vector3<T>;
     fn mul(self, rhs: T) -> Vector3<T> {
         Vector3::<T>::new(
