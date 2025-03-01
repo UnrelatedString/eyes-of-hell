@@ -59,13 +59,13 @@ pub async fn run() {
     ).gms(&context);
 
     let north = AAPrism::new(
-        Vec3::new(-5.5, -0.5, -0.5),
+        Vec3::new(-3.5, -0.5, -0.5),
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
 
     let east = AAPrism::new(
-        Vec3::new(-0.5, -0.5, -5.5),
+        Vec3::new(-0.5, -0.5, -3.5),
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
@@ -81,8 +81,8 @@ pub async fn run() {
         player.tick(frame_input.elapsed_time);
 
         camera.set_view(
-            player.pos,
             player.pos + player.eye * DISTANCE,
+            player.pos,
             UP_VEC,
         );
 
