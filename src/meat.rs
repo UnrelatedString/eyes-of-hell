@@ -98,6 +98,12 @@ pub async fn run() {
         Srgba::new(150, 100, 100, 127),
         true,
     );
+    let owo = pain(
+        Mat4::from_scale(7.0) * Mat4::from_angle_x(Rad::turn_div_4()),
+        &context,
+        Srgba::new(100, 100, 200, 127),
+        true,
+    );
 
     let mut player = Player::new();
 
@@ -128,6 +134,7 @@ pub async fn run() {
         screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
 
         screen.render(&camera, &ooo, &[]);
+        screen.render(&camera, &owo, &[]);
         screen.render(&camera, &cube, &[]);
         screen.render(&camera, &north, &[]);
         screen.render(&camera, &west, &[]);
