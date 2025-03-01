@@ -22,15 +22,17 @@ pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bo
         ColorMaterial {
             color,
             texture: None,
-            render_states: if is_transparent {
+            render_states: 
                 RenderStates {
                     blend: Blend::TRANSPARENCY,
-                    write_mask: WriteMask::COLOR,
+                    write_mask:
+                        if is_transparent {
+                            WriteMask::COLOR
+                        } else {
+                            WriteMask::COLOR
+                        },
                     ..Default::default()
-                }
-            } else {
-                Default::default()
-            },
+                },
             is_transparent,
         }
     )
