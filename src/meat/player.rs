@@ -204,7 +204,7 @@ impl Player {
                 self.eye = self.eye.cw().cw();
             }
             println!("{:?} {:?}{:?}{:?}", self.eye, self.eye.x(), self.eye.y(),self.eye.z());
-            println!("{:?}", self.eye * Vec3::new(1.0, 1.0, 1.0));
+            println!("{:?}", self.eye * 1.0);
         } else {
             if wasd.hardup() {
                 self.velocity2 -= Vec2::unit_y();
