@@ -19,7 +19,7 @@ mod player;
 mod input;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE };
-use crate::meat::geometry::AAPrism;
+use crate::meat::geometry:: { AAPrism, pain };
 use crate::meat::player::Player;
 
 const DISTANCE: f32 = 200.0;
@@ -58,11 +58,23 @@ pub async fn run() {
         WHITE_CUBE,
     ).gms(&context);
 
-    let north = AAPrism::new(
-        Vec3::new(-3.5, -0.5, -0.5),
-        Vec3::new(1.0, 1.0, 1.0),
-        PINK_CUBE,
-    ).gms(&context);
+    let north = pain(
+        Mat4::from_translation(Vec3::unit_x() * -3.0) * Mat4::from_angle_y(Rad::turn_div_4()),
+        &context,
+        Srgba::GREEN,
+    );
+
+    let west = pain(
+        Mat4::from_translation(Vec3::unit_z() * 3.0),
+        &context,
+        Srgba::BLUE,
+    );
+
+    let up = pain(
+        Mat4::from_translation(UP_VEC * 3.0) * Mat4::from_angle_x(Rad::turn_div_4()),
+        &context,
+        Srgba::RED,
+    );
 
     let east = AAPrism::new(
         Vec3::new(-0.5, -0.5, -3.5),
@@ -100,6 +112,8 @@ pub async fn run() {
 
         screen.render(&camera, &cube, &[]);
         screen.render(&camera, &north, &[]);
+        screen.render(&camera, &west, &[]);
+        screen.render(&camera, &up, &[]);
         screen.render(&camera, &east, &[]);
         screen.render(&camera, &bod, &[]);
 

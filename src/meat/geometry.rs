@@ -6,9 +6,22 @@ use three_d::{
     Gm,
     Context,
     ColorMaterial,
+    Srgba,
 };
 
 use crate::meat::color::PrismFacePalette;
+
+pub fn pain(transform: Mat4, context: &Context, color: Srgba) -> Gm<Mesh, ColorMaterial> {
+    let mut excrement = CpuMesh::circle(7);
+    excrement.transform(transform).unwrap();
+    Gm::new(
+        Mesh::new(context, &excrement),
+        ColorMaterial {
+            color,
+            ..Default::default()
+        }
+    )
+}
 
 fn rectangle(top_ne: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
