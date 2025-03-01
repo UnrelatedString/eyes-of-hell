@@ -41,7 +41,7 @@ pub async fn run() {
         window.viewport(),
         Vec3::new(1.0, 1.0, 1.0) * DISTANCE,
         Vec3::new(0.0, 0.0, 0.0),
-        Vec3::new(0.0, 1.0, 0.0),
+        Vec3::new(0.0, -1.0, 0.0),
         SCREEN_HEIGHT_WORLD_UNITS / DISTANCE / 3.0_f32.sqrt(),
         0.0, // maybe make the z bounds by region and, like, automatically use the min/max from neighbors
         DISTANCE * 2.0,
