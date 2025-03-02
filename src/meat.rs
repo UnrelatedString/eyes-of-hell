@@ -92,8 +92,8 @@ pub async fn run() {
     ).gms(&context);
 
     let big_floor = AAPrism::new(
-        Vec3::new(1.0, 0.0, 1.0) * -5.0,
-        Vec3::new(1.0, -0.1, 1.0) * 10.0,
+        Vec3::new(-5.0, -1.0, -5.0),
+        Vec3::new(1.0, 0.1, 1.0) * 10.0,
         AMBER_CUBE,
     ).gms(&context);
 
