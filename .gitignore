@@ -28,6 +28,10 @@ Cargo.lock
 
 /node_modules
 
+# wasm-pack output (does the Webpack plugin not clean this up?)
+
+/pkg
+
 # Webpack output
 
 /dist

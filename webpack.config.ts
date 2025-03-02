@@ -1,17 +1,19 @@
 import path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const dist = path.resolve(__dirname, "dist");
 
 module.exports = {
   mode: "production",
   entry: {
-    index: "./js/index.js"
+    index: "./web/index.js"
   },
   output: {
     path: dist,
-    filename: "[name].js"
+    filename: "[name].js",
+    clean: true
   },
   devServer: {
     contentBase: dist,
@@ -23,6 +25,10 @@ module.exports = {
 
     new WasmPackPlugin({
       crateDirectory: __dirname,
+    }),
+
+    new HtmlWebpackPlugin({
+      title: "Eyes of Hell",
     }),
   ]
 };

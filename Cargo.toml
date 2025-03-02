@@ -3,6 +3,12 @@ name = "eyes-of-hell"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "eyes-of-hell"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 three-d = { version = "0.18.2" }
 functor_derive = "0.4.3"
