@@ -22,6 +22,19 @@ use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
 use crate::meat::geometry:: { AAPrism, pain };
 use crate::meat::player::Player;
 
+/**
+
+== IMPORTANT ==
+
+UP IS +Y
+N IS +Z
+E IS +X
+
+YES THIS IS KIND OF BACKWARDS BUT I WANT TO KEEP THE NE QUADRANT POSITIVE
+AND THEN I CAN JUST MAKE THE SW QUADRANT THE ACTUAL "MAIN" ONE SO NE IS AT THE TOP OF THE ROSE
+
+*/
+
 const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 const UP_VEC: Vec3 = Vec3::new(0.0, 1.0, 0.0);
