@@ -23,3 +23,11 @@ Cargo.lock
 # Added by cargo
 
 /target
+
+# node stuff
+
+/node_modules
+
+# Webpack output
+
+/dist
