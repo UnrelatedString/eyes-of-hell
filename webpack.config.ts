@@ -15,7 +15,7 @@ module.exports = {
     clean: true
   },
   devServer: {
-    contentBase: dist,
+    static: path.resolve(__dirname, 'dist')
   },
   plugins: [
     new WasmPackPlugin({
