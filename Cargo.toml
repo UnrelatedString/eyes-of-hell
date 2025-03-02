@@ -30,3 +30,6 @@ console_log = { version = "1", optional = false }
 
 [target.'cfg(target_family = "wasm")'.dev-dependencies]
 wasm-bindgen-test = "0.3.34"
+
+[target.'cfg(target_family = "wasm")'.package.metadata]
+wasm-opt = false
