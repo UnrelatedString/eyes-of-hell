@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: "Let's see how much of this can actually just be done automatically!"
+      - name: Install Node dependencies
+        run: npx pnpm i
+      - name: Build webpack
         run: npm run build
       - name: Upload dist zip as artifact
         uses: actions/upload-artifact@v4
