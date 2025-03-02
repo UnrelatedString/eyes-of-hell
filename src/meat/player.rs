@@ -148,13 +148,17 @@ impl Quadrant {
         }
     }
 
-    pub fn input_to_spatial(self, input: Vec2) -> Vec3 {
-        // just bullshitting this for now lol
-        let raw = Vec3::new(
-            self.x() * input.x - self.z() * input.y,
-            0.0,
-            self.z() * input.y - self.x() * input.x,
-        );
+    pub fn input_to_spatial(self, input: Vec3) -> Vec3 {
+        // Repeat after me: Premature optimization is the root of all evil
+        use Quadrant::*;
+        let raw = Mat3::from_angle_y(Rad(
+            match self {
+                NE => -3.0 * PI / 4.0,
+                NW => -PI / 4.0,
+                SW => PI / 4.0,
+                SE => -5.0 * PI / 4.0,
+            } 
+        )) * input;
         if raw.is_zero() {
             raw
         } else {
@@ -170,7 +174,7 @@ pub struct Player {
     pub eye: Octant,
     pub pos: Vec3,
     wasd: Cardinals<KeyHoldState>,
-    velocity2: Vec2,
+    planar_dir: Vec3,
 }
 
 impl Player {
@@ -179,7 +183,7 @@ impl Player {
 
     pub fn new() -> Player {
         Player {
-            eye: Octant::from_quadrant(Quadrant::NE, Pos),
+            eye: Octant::from_quadrant(Quadrant::SW, Pos),
             pos: Vec3::new(0.0, 0.0, 0.0),
             wasd: Cardinals {
                 up: KeyHoldState::new(Key::W),
@@ -187,12 +191,12 @@ impl Player {
                 left: KeyHoldState::new(Key::A),
                 right: KeyHoldState::new(Key::D),
             },
-            velocity2: Vec2::zero(),
+            planar_dir: Vec3::zero(),
         }
     }
 
     pub fn update(&mut self, event: &Event) {
-        self.velocity2 = Vec2::new(0.0, 0.0);
+        self.planar_dir = Vec3::zero();
         self.wasd.update(event);
         let wasd: Cardinals<bool> = (&self.wasd).into();
 
@@ -206,22 +210,22 @@ impl Player {
             }
         } else {
             if wasd.hardup() {
-                self.velocity2 -= Vec2::unit_y();
+                self.planar_dir += Vec3::unit_z();
             }
             if wasd.harddown() {
-                self.velocity2 += Vec2::unit_y();
+                self.planar_dir -= Vec3::unit_z();
             }
             if wasd.hardleft() {
-                self.velocity2 -= Vec2::unit_x();
+                self.planar_dir += Vec3::unit_x();
             }
             if wasd.hardright() {
-                self.velocity2 += Vec2::unit_x();
+                self.planar_dir -= Vec3::unit_x();
             }
         }
     }
 
     pub fn tick(&mut self, delta: f64) {
-        self.pos += self.eye.quadrant().input_to_spatial(self.velocity2) * (delta as f32) * Player::SPEED;
+        self.pos += self.eye.quadrant().input_to_spatial(self.planar_dir) * (delta as f32) * Player::SPEED;
     }
 }
 

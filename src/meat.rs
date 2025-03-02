@@ -66,7 +66,7 @@ pub async fn run() {
     );
 
     let cube = AAPrism::new(
-        Vec3::new(-1.0, -1.0, -1.0),
+        Vec3::new(-1.0, 0.0, -1.0),
         Vec3::new(2.0, 2.0, 2.0),
         WHITE_CUBE,
     ).gms(&context);
@@ -86,7 +86,7 @@ pub async fn run() {
     );
 
     let east = AAPrism::new(
-        Vec3::new(-0.5, -0.5, -3.5),
+        Vec3::new(-0.5, 0.0, -3.5),
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
