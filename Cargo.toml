@@ -3,6 +3,9 @@ name = "eyes-of-hell"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 [[bin]]
 name = "eyes-of-hell"
 
@@ -30,6 +33,3 @@ console_log = { version = "1", optional = false }
 
 [target.'cfg(target_family = "wasm")'.dev-dependencies]
 wasm-bindgen-test = "0.3.34"
-
-[target.'cfg(target_family = "wasm")'.package.metadata]
-wasm-opt = false
