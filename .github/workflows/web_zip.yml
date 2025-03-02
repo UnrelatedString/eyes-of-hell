@@ -1,0 +1,21 @@
+name: Web Zip
+on: ["push", "workflow_dispatch"]
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Let's see how much of this can actually just be done automatically!"
+        run: pnpm build
+      # - name: Zip /dist
+      #   uses: vimtor/action-zip@v1.2
+      #   with:
+      #     files: /dist
+      #     dest: dist.zip
+      - name: Upload dist zip as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Web build
+          path: /dist
+          retention-days: 1 # this is not a release workflow. at least not yet
