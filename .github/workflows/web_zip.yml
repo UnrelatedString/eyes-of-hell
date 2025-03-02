@@ -7,12 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: "Let's see how much of this can actually just be done automatically!"
-        run: npm build
-      # - name: Zip /dist
-      #   uses: vimtor/action-zip@v1.2
-      #   with:
-      #     files: /dist
-      #     dest: dist.zip
+        run: npm run build
       - name: Upload dist zip as artifact
         uses: actions/upload-artifact@v4
         with:
