@@ -95,14 +95,14 @@ impl AAPrism {
         let east = rectangle(
             min_corner + sx,
             Vec2::new(size.z, size.y),
-            Mat4::from_angle_y(Rad::turn_div_4()),
+            Mat4::from_angle_y(-Rad::turn_div_4()),
         );
         
         // WEST = -X
         let west = rectangle(
             min_corner,
             Vec2::new(size.z, size.y),
-            Mat4::from_angle_y(Rad::turn_div_4()),
+            Mat4::from_angle_y(-Rad::turn_div_4()),
         );
 
         let top = rectangle(
