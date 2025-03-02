@@ -1,6 +1,6 @@
 import path from "path";
+import CopyPlugin from "copy-webpack-plugin";
 import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
-import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const dist = path.resolve(__dirname, "dist");
 
@@ -15,15 +15,18 @@ module.exports = {
     clean: true
   },
   devServer: {
-    static: path.resolve(__dirname, 'dist')
+    static: path.resolve(__dirname, 'dist'),
+    client: {
+      overlay: false,
+    },
   },
   plugins: [
-    new WasmPackPlugin({
-      crateDirectory: __dirname,
+    new CopyPlugin({
+      patterns: [path.resolve(__dirname, "web/static")]
     }),
 
-    new HtmlWebpackPlugin({
-      title: "Eyes of Hell",
+    new WasmPackPlugin({
+      crateDirectory: __dirname,
     }),
   ],
   experiments: {
