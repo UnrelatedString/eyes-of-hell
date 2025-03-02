@@ -1,8 +1,6 @@
 import path from "path";
-import CopyPlugin from "copy-webpack-plugin";
 import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { experiments } from "webpack";
 
 const dist = path.resolve(__dirname, "dist");
 
@@ -20,10 +18,6 @@ module.exports = {
     contentBase: dist,
   },
   plugins: [
-    new CopyPlugin({
-      patterns: [path.resolve(__dirname, "static")]
-    }),
-
     new WasmPackPlugin({
       crateDirectory: __dirname,
     }),
