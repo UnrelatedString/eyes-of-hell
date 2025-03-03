@@ -7,11 +7,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(target_family = "wasm")]
 #[wasm_bindgen(start)]
 pub async fn start() -> Result<(), JsValue> {
-    #[cfg(feature = web_debug)] {
+    #[cfg(feature = "web_debug")] {
         console_log::init_with_level(log::Level::Debug).unwrap();
         std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     }
     
-    run(Nothing).await; // None -- but compile error is good because I want to make sure the new script works LOL
+    run(None).await;
     Ok(())
 }
