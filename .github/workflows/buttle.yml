@@ -2,12 +2,12 @@ name: Upload multi-platform release to Itch
 on: ["workflow_dispatch"]
 
 env:
-  USERNAME: UnrelatedString
+  USERNAME: unrelatedstring
   GAMENAME: eyes-of-hell
   CARGO_BUILD: cargo build --release --bin eyes-of-hell
 
 jobs:
-  web-zip:
+  web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,67 +15,132 @@ jobs:
         run: npx pnpm i
       - name: Build webpack
         run: npm run release
-      - name: Upload dist to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
-          PACKAGE: dist
-          CHANNEL: web
+      - name: Save /dist as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: web-build
+          path: dist
+          retention-days: 1
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build Windows EXE
         run: $CARGO_BUILD
-      - name: Upload eyes-of-hell.exe to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
-          PACKAGE: target/release/eyes-of-hell.exe
-          CHANNEL: windows
+      - name: Save eyes-of-hell.exe as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: windows-build
+          path: target/release/eyes-of-hell
+          retention-days: 1
   linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build Linux executable
         run: $CARGO_BUILD
-      - name: Upload eyes-of-hell to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
-          PACKAGE: target/release/eyes-of-hell
-          CHANNEL: linux
+      - name: Save eyes-of-hell as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: linux-build
+          path: target/release/eyes-of-hell
+          retention-days: 1
+
   mac-x86:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - name: Build MacOS executable
         run: $CARGO_BUILD
-      - name: Upload eyes-of-hell to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
-          PACKAGE: target/release/eyes-of-hell
-          CHANNEL: mac-x86
+      - name: Save eyes-of-hell as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: mac-x86-build
+          path: target/release/eyes-of-hell
+          retention-days: 1
   mac-arm:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - name: Build MacOS executable
         run: $CARGO_BUILD
-      - name: Upload eyes-of-hell to itch.io
+      - name: Save eyes-of-hell as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: mac-arm-build
+          path: target/release/eyes-of-hell
+          retention-days: 1
+        
+  upload-everything:
+    runs-on: ubuntu-latest
+    needs: ["web", "windows", "mac-x86", "mac-arm"]
+    steps:
+      - name: Retrieve web build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-web-build
+          path: web
+      - name: Upload web build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: $USERNAME
           ITCH_GAME: $GAMENAME
-          PACKAGE: target/release/eyes-of-hell
+          PACKAGE: web
+          CHANNEL: web
+      - name: Retrieve Windows build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-windows-build
+          path: windows
+      - name: Upload Windows build to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: windows
+          CHANNEL: windows
+      - name: Retrieve Linux build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-linux-build
+          path: linux
+      - name: Upload Linux build to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: linux
+          CHANNEL: linux
+      - name: Retrieve MacOS (x86) build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-mac-x86-build
+          path: mac-x86
+      - name: Upload MacOS (x86) build to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: mac-x86
+          CHANNEL: mac-x86
+      - name: Retrieve MacOS (ARM) build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-mac-arm-build
+          path: mac-arm
+      - name: Upload MacOS (ARM) build to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: mac-arm
           CHANNEL: mac-arm
+      - name: Delete transient artifacts
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: butler-**
