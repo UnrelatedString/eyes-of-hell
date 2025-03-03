@@ -2,7 +2,6 @@ import path from "path";
 import webpack from 'webpack';
 import _ from 'webpack-dev-server'; // thanks https://github.com/DefinitelyTyped/DefinitelyTyped/issues/27570#issuecomment-437115227
 import CopyPlugin from "copy-webpack-plugin";
-import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
 
 const dist = path.resolve(__dirname, "dist");
 
@@ -29,15 +28,7 @@ const config = (
   },
   plugins: [
     new CopyPlugin({
-      patterns: [path.resolve(__dirname, "web/static")]
-    }),
-
-    new WasmPackPlugin({
-      crateDirectory: __dirname,
-      extraArgs: (
-        "--target browser --mode normal " + // defaults according to docs, except --typescript which DOESN'T EXIST
-        (env.release ? "--release" : "--dev")
-      ),
+      patterns: [path.resolve(__dirname, "web/static"), path.resolve(__dirname, "pkg")]
     }),
   ],
   experiments: {
