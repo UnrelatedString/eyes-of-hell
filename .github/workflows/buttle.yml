@@ -18,7 +18,7 @@ jobs:
       - name: Upload dist to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: $USERNAME
           ITCH_GAME: $GAMENAME
           PACKAGE: dist
@@ -32,7 +32,7 @@ jobs:
       - name: Upload eyes-of-hell.exe to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: $USERNAME
           ITCH_GAME: $GAMENAME
           PACKAGE: target/release/eyes-of-hell.exe
@@ -46,7 +46,7 @@ jobs:
       - name: Upload eyes-of-hell to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: $USERNAME
           ITCH_GAME: $GAMENAME
           PACKAGE: target/release/eyes-of-hell
@@ -57,5 +57,25 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build MacOS executable
         run: $CARGO_BUILD
-      - name: I just want to know where the executable actually ends up and what the file ending is because I do not have a Mac
-        run: find target/release
+      - name: Upload eyes-of-hell to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: target/release/eyes-of-hell
+          CHANNEL: mac-x86
+  mac-arm:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build MacOS executable
+        run: $CARGO_BUILD
+      - name: Upload eyes-of-hell to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: target/release/eyes-of-hell
+          CHANNEL: mac-arm
