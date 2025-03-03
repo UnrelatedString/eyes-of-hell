@@ -1,10 +1,17 @@
 import path from "path";
+import webpack from 'webpack';
+import _ from 'webpack-dev-server'; // thanks https://github.com/DefinitelyTyped/DefinitelyTyped/issues/27570#issuecomment-437115227
 import CopyPlugin from "copy-webpack-plugin";
 import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
 
 const dist = path.resolve(__dirname, "dist");
 
-module.exports = {
+// thank you https://stackoverflow.com/a/71302165
+
+const config = (
+  env: Record<string, any>,
+  _argv: Record<string, any>,
+): webpack.Configuration => ({
   mode: "production",
   entry: {
     index: "./web/index.js"
@@ -32,4 +39,6 @@ module.exports = {
   experiments: {
     asyncWebAssembly: true,
   },
-};
+});
+
+export default config;
