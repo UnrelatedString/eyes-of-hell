@@ -21,9 +21,35 @@ pub async fn start() -> Result<(), JsValue> {
         initial_size: None,
         // Can put undocumented canvas setting here for fancier itch layout lol
         ..Default::default()
-    }).await;
+    }).await.map_err(|error| {   
+        let msg = format!("Failed to initialize three-d/winit window with error:\n\t{error}");
+        show_error_in_HTML(&msg).map_or_else(
+            |jserror| jserror,
+            |()| JsValue::from_str(&msg),
+        )
+    })
+}
+
+fn show_error_in_HTML(msg: &str) -> Result<(), JsValue> {
+    let doc = web_sys::window().and_then(|w| w.document()).ok_or_else(
+        || JsValue::from_str("Failed to get document while displaying error!")
+    )?;
+    let body = doc.body().ok_or_else(
+        || JsValue::from_str("Failed to get document body while displaying error!")
+    )?;
+
+    let elem = doc.create_element("h3")?;
+    elem.set_text_content(Some(msg));
+    
+    if let Some(before) = body.first_child() {
+        body.replace_child(&elem, &before)?;
+    } else {
+        body.append_child(&elem)?;
+    }
+
     Ok(())
 }
+
 }
 
 #[cfg(not(target_family = "wasm"))]

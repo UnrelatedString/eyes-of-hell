@@ -21,5 +21,5 @@ async fn main() {
     run(WindowSettings {
         initial_size: Some((1280, 720)),
         ..Default.default()
-    }).await;
+    }).await.unwrap();
 }
