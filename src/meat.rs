@@ -39,11 +39,11 @@ const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 const UP_VEC: Vec3 = Vec3::new(0.0, 1.0, 0.0);
 
-pub async fn run() {
+pub async fn run(initial_size: Option<(u32, u32)>) {
     let window = Window::new(three_d::WindowSettings {
         title: "Eyes of Hell".to_string(),
         min_size: (720, 480),
-        initial_size: Some((1280, 720)),
+        initial_size,
         ..Default::default()
     }).unwrap();
 

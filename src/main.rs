@@ -17,5 +17,5 @@ use meat::run;
 #[cfg(not(target_family = "wasm"))]
 #[tokio::main]
 async fn main() {
-    run().await;
+    run(Some((1280, 720))).await;
 }
