@@ -20,6 +20,6 @@ use three_d::WindowSettings;
 async fn main() {
     run(WindowSettings {
         initial_size: Some((1280, 720)),
-        ..Default.default()
+        ..Default::default()
     }).await.unwrap();
 }
