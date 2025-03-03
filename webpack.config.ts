@@ -28,7 +28,7 @@ const config = (
   },
   plugins: [
     new CopyPlugin({
-      patterns: [path.resolve(__dirname, "web/static")]//, path.resolve(__dirname, "pkg")]
+      patterns: [path.resolve(__dirname, "web/static"), path.resolve(__dirname, "pkg")]
     }),
   ],
   experiments: {

@@ -1,1 +1,1 @@
-import("../pkg/index.js").catch(console.error);
+import("../pkg/wasmpack.js").catch(console.error);

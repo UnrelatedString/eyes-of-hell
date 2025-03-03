@@ -4,8 +4,10 @@
   "description": "A game where you walk around and look at things",
   "main": "index.js",
   "scripts": {
-    "build": "wasm-pack --verbose build --target browser --mode normal --dev --features web_debug && webpack",
-    "release": "wasm-pack --verbose build --target browser --mode normal --release && webpack",
+    "prebuild": "rimraf pkg dist",
+    "prerelease": "rimraf pkg dist",
+    "build": "wasm-pack --verbose build --out-name wasmpack --target browser --mode normal --dev --features web_debug && webpack",
+    "release": "wasm-pack --verbose build --out-name wasmpack --target browser --mode normal --release && webpack",
     "serve": "webpack serve",
     "try": "pnpm build && pnpm serve"
   },
