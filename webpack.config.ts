@@ -34,6 +34,10 @@ const config = (
 
     new WasmPackPlugin({
       crateDirectory: __dirname,
+      extraArgs: (
+        "--target browser --mode normal " + // defaults according to docs, except --typescript which DOESN'T EXIST
+        (env.release ? "--release" : "--dev")
+      ),
     }),
   ],
   experiments: {

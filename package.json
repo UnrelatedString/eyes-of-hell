@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "release": "webpack",
+    "release": "webpack --env release",
     "serve": "webpack serve",
-    "try": "cargo build --lib --profile dev --target wasm32-unknown-unknown && pnpm build && pnpm serve"
+    "try": "webpack build && webpack serve"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3.0-or-later",
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
     "@types/node": "^22.13.8",
