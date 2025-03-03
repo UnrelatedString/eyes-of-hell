@@ -8,7 +8,7 @@ const dist = path.resolve(__dirname, "dist");
 // thank you https://stackoverflow.com/a/71302165
 
 const config = (
-  env: Record<string, any>,
+  _env: Record<string, any>,
   _argv: Record<string, any>,
 ): webpack.Configuration => ({
   mode: "production",
@@ -30,12 +30,6 @@ const config = (
     new CopyPlugin({
       patterns: [
         path.resolve(__dirname, "web/static"),
-        {
-          from: path.resolve(__dirname, "pkg"),
-          globOptions: {
-            ignore: ["!(**/wasmpack*)"], // negative ignores. because filter is discouraged for names
-          },
-        },
       ]
     }),
   ],
