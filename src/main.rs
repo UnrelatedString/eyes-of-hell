@@ -11,11 +11,15 @@ You should have received a copy of the GNU General Public License along with thi
 
 mod meat;
 use meat::run;
+use three_d::WindowSettings;
 
 // what if. Mystic Eyes of Depth Perception
 
 #[cfg(not(target_family = "wasm"))]
 #[tokio::main]
 async fn main() {
-    run().await;
+    run(WindowSettings {
+        initial_size: Some((1280, 720)),
+        ..Default.default()
+    }).await;
 }

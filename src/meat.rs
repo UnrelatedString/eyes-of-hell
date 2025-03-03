@@ -1,6 +1,7 @@
 use three_d::core::prelude::*;
 use three_d::{
     Window,
+    WindowSettings,
     Camera,
     CpuMesh,
     Mesh,
@@ -39,12 +40,11 @@ const DISTANCE: f32 = 200.0;
 const SCREEN_HEIGHT_WORLD_UNITS: f32 = 20.0;
 const UP_VEC: Vec3 = Vec3::new(0.0, 1.0, 0.0);
 
-pub async fn run() {
-    let window = Window::new(three_d::WindowSettings {
+pub async fn run(window_defaults: WindowSettings) {
+    let window = Window::new(WindowSettings {
         title: "Eyes of Hell".to_string(),
         min_size: (720, 480),
-        initial_size: Some((1280, 720)),
-        ..Default::default()
+        ..window_defaults
     }).unwrap();
 
     // TODO: keybinds
