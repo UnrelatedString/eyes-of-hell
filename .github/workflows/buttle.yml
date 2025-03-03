@@ -73,7 +73,7 @@ jobs:
         
   upload-everything:
     runs-on: ubuntu-latest
-    needs: ["web", "windows", "mac-x86", "mac-arm"]
+    needs: ["web", "windows", "linux", "mac-x86", "mac-arm"]
     steps:
       - name: Retrieve web build as artifact
         uses: actions/download-artifact@v4
