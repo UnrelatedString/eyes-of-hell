@@ -28,7 +28,15 @@ const config = (
   },
   plugins: [
     new CopyPlugin({
-      patterns: [path.resolve(__dirname, "web/static"), path.resolve(__dirname, "pkg")]
+      patterns: [
+        path.resolve(__dirname, "web/static"),
+        {
+          from: path.resolve(__dirname, "pkg"),
+          globOptions: {
+            ignore: ["!(**/wasmpack*)"], // negative ignores. because filter is discouraged for names
+          },
+        },
+      ]
     }),
   ],
   experiments: {

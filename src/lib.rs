@@ -19,7 +19,7 @@ pub async fn start() -> Result<(), JsValue> {
     
     run(WindowSettings {
         initial_size: None,
-        // TODO: canvas (why isn't it documented ;_; like I know it's a #[cfg] but just mention it manually?)
+        // Can put undocumented canvas setting here for fancier itch layout lol
         ..Default::default()
     }).await;
     Ok(())

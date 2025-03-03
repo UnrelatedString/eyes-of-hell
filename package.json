@@ -12,7 +12,7 @@
     "try": "pnpm build && pnpm serve"
   },
   "keywords": [],
-  "author": "",
+  "author": "UnrelatedString",
   "license": "GPLv3.0-or-later",
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
