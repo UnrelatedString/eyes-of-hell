@@ -1,0 +1,61 @@
+name: Upload multi-platform release to Itch
+on: ["workflow_dispatch"]
+
+env:
+  USERNAME: UnrelatedString
+  GAMENAME: eyes-of-hell
+  CARGO_BUILD: cargo build --release --bin eyes-of-hell
+
+jobs:
+  web-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node dependencies
+        run: npx pnpm i
+      - name: Build webpack
+        run: npm run release
+      - name: Upload dist to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: dist
+          CHANNEL: web
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Windows EXE
+        run: $CARGO_BUILD
+      - name: Upload eyes-of-hell.exe to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: target/release/eyes-of-hell.exe
+          CHANNEL: windows
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux executable
+        run: $CARGO_BUILD
+      - name: Upload eyes-of-hell to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDS }}
+          ITCH_USER: $USERNAME
+          ITCH_GAME: $GAMENAME
+          PACKAGE: target/release/eyes-of-hell
+          CHANNEL: linux
+  mac-x86:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build MacOS executable
+        run: $CARGO_BUILD
+      - name: I just want to know where the executable actually ends up and what the file ending is because I do not have a Mac
+        run: find target/release
