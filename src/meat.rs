@@ -45,7 +45,7 @@ pub async fn run(window_defaults: WindowSettings) {
         title: "Eyes of Hell".to_string(),
         min_size: (720, 480),
         ..window_defaults
-    }).unwrap();
+    }).expect("Failed to initialize window!");
 
     // TODO: keybinds
 
