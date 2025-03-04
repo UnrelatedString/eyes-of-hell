@@ -25,8 +25,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Windows EXE
         run: $CARGO_BUILD
-      - name: Please what the hell is happening aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        run: gitbash.exe find target
+      - name: Please what the hell is happening aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        run: C:\Program Files\Git\bin\bash.exe
       - name: Save eyes-of-hell.exe as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
