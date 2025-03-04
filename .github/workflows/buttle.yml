@@ -2,8 +2,6 @@ name: Upload multi-platform release to Itch
 on: ["workflow_dispatch"]
 
 env:
-  USERNAME: unrelatedstring
-  GAMENAME: eyes-of-hell
   CARGO_BUILD: cargo build --release --bin eyes-of-hell
 
 jobs:
@@ -27,6 +25,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Windows EXE
         run: $CARGO_BUILD
+      - name: Please what the hell is happening aaaaa
+        run: find target
       - name: Save eyes-of-hell.exe as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
@@ -85,8 +85,8 @@ jobs:
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
           PACKAGE: web
           CHANNEL: web
       - name: Retrieve Windows build as artifact
@@ -99,8 +99,8 @@ jobs:
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
           PACKAGE: windows
           CHANNEL: windows
       - name: Retrieve Linux build as artifact
@@ -113,8 +113,8 @@ jobs:
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
           PACKAGE: linux
           CHANNEL: linux
       - name: Retrieve MacOS (x86) build as artifact
@@ -127,8 +127,8 @@ jobs:
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
           PACKAGE: mac-x86
           CHANNEL: mac-x86
       - name: Retrieve MacOS (ARM) build as artifact
@@ -141,8 +141,8 @@ jobs:
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: $USERNAME
-          ITCH_GAME: $GAMENAME
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
           PACKAGE: mac-arm
           CHANNEL: mac-arm
       - name: Clean up transient artifacts
