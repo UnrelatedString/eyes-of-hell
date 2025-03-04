@@ -18,7 +18,7 @@ jobs:
       - name: Save /dist as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: web-build
+          name: butler-web-build
           path: dist
           retention-days: 1
   windows:
@@ -30,8 +30,8 @@ jobs:
       - name: Save eyes-of-hell.exe as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: windows-build
-          path: target/release/eyes-of-hell.exe
+          name: butler-windows-build
+          path: target\release\eyes-of-hell.exe
           retention-days: 1
   linux:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Save eyes-of-hell as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: linux-build
+          name: butler-linux-build
           path: target/release/eyes-of-hell
           retention-days: 1
 
@@ -55,7 +55,7 @@ jobs:
       - name: Save eyes-of-hell as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: mac-x86-build
+          name: butler-mac-x86-build
           path: target/release/eyes-of-hell
           retention-days: 1
   mac-arm:
@@ -67,7 +67,7 @@ jobs:
       - name: Save eyes-of-hell as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: mac-arm-build
+          name: butler-mac-arm-build
           path: target/release/eyes-of-hell
           retention-days: 1
         
@@ -80,6 +80,7 @@ jobs:
         with:
           name: butler-web-build
           path: web
+          latest: true
       - name: Upload web build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -93,6 +94,7 @@ jobs:
         with:
           name: butler-windows-build
           path: windows
+          latest: true
       - name: Upload Windows build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -106,6 +108,7 @@ jobs:
         with:
           name: butler-linux-build
           path: linux
+          latest: true
       - name: Upload Linux build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -119,6 +122,7 @@ jobs:
         with:
           name: butler-mac-x86-build
           path: mac-x86
+          latest: true
       - name: Upload MacOS (x86) build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -132,6 +136,7 @@ jobs:
         with:
           name: butler-mac-arm-build
           path: mac-arm
+          latest: true
       - name: Upload MacOS (ARM) build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -140,7 +145,7 @@ jobs:
           ITCH_GAME: $GAMENAME
           PACKAGE: mac-arm
           CHANNEL: mac-arm
-      - name: Delete transient artifacts
+      - name: Clean up transient artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
           name: butler-**
