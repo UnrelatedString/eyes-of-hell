@@ -12,6 +12,9 @@ name = "eyes-of-hell"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[features]
+web_debug = ["log", "console_log", "console_error_panic_hook"]
+
 [dependencies]
 three-d = { version = "0.18.2" }
 functor_derive = "0.4.3"
@@ -26,13 +29,10 @@ tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 serde-wasm-bindgen = "0.6.5"
-
-[target.'cfg(all(target_family = "wasm", debug_assertions))'.dependencies]
-# took a hot minute to figure out how to configure this staring through examples
-# so I'm leaving the optionals in as a monument LMAO
-log = { version = "0.4", optional = false }
-console_error_panic_hook = { version = "0.1", optional = false }
-console_log = { version = "1", optional = false }
+web-sys = { version = "0.3.77", features = ["console", "Document", "Element", "HtmlElement", "Node", "Window"]}
+log = { version = "0.4", optional = true }
+console_error_panic_hook = { version = "0.1", optional = true }
+console_log = { version = "1", features = ["color"], optional = true }
 
 [target.'cfg(target_family = "wasm")'.dev-dependencies]
 wasm-bindgen-test = "0.3.34"

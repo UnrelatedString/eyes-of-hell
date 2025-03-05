@@ -1,5 +1,5 @@
-name: Web Zip
-on: ["push", "workflow_dispatch"]
+name: Zip web build as artifact
+on: ["workflow_dispatch"]
 
 jobs:
   build-and-zip:
@@ -9,7 +9,7 @@ jobs:
       - name: Install Node dependencies
         run: npx pnpm i
       - name: Build webpack
-        run: npm run build
+        run: npm run release
       - name: Upload dist zip as artifact
         uses: actions/upload-artifact@v4
         with:
