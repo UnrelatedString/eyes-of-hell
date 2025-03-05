@@ -4,43 +4,19 @@
 /// I thought of it in the shower after having the terrible idea to use *rat*ionals.
 /// Still accepts proper and improper fraction syntax (within limits).
 macro_rules! rats {
-    ($(
-            $($mainl:literal)?
-            $($maini:ident)?
-        $(
-            +
-            $($plusl:literal)?
-            $($plusi:ident)?
-        )?
-        
-            $($minusl:literal)?
-            $(- $minusi:ident)?
-        
-        $(
-            /
-            $($dividel:literal)?
-            $($dividei:ident)?
-        )?
-            
-    ),+) => {
-        $crate::meat::macros::vecn!( $(
-                 $($mainl)?$($maini)? as f32
-            $( + $($plusl)?$($plusi)? as f32)?
-            $( $($minusl)?$(- $minusi)? as f32)?
-            $( / $($dividel)?$($dividei)? as f32)?
-
-        ),+)
+    ($($t:tt),+) => {
+        [
+            $crate::meat::macros::_rats!($($t,)+)
+        ].into()
     }
 }
 
-/// Given a comma-separated list of exprs, calls vec2, vec3, or vec4 as appropriate.
-macro_rules! vecn {
-    ($x:expr, $y:expr) => { three_d::prelude::vec2($x, $y) };
-    ($x:expr, $y:expr, $z:expr) => { three_d::prelude::vec3($x, $y, $z) };
-    ($x:expr, $y:expr, $z:expr, $w:expr) => { three_d::prelude::vec4($x, $y, $z, $w) };
+macro_rules! _rats {
+    ($n:literal $punct:tt $($rest:tt)*) => {
+
+    }
 }
 
 // https://stackoverflow.com/a/31749071/11047396
 pub(crate) use rats;
 pub(crate) use _rats;
-pub(crate) use vecn;
