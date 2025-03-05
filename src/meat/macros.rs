@@ -6,81 +6,74 @@
 macro_rules! rats {
     // https://veykril.github.io/tlborm/decl-macros/patterns/callbacks.html 😭
     ($($t:tt)*) => {
-        $crate::meat::macros::_count_the_rats(
-            ( $($t)* ) // duplicated so one can continue being passed as tt
-            ( $($t)* ) // while the other can be parsed as a list of exprs >:3
-        )
+        $crate::meat::macros::_rats!(@cursor, $($t)*)
     }
-}
-
-macro_rules! _count_the_rats {
-    (
-        $($t:tt)*
-        
-    )
-}
-
-macro_rules! _erase {
-    ($($t:tt)*) => ()
 }
 
 macro_rules! _rats {
     (
-        $($silence:tt $(ats:tt)*)? @
+        $($processed:expr,)* @cursor,
         $($wholel:literal)?$($wholei:ident)? +
         $($nl:literal)?$($ni:ident)? /
         $($dl:literal)?$($di:ident)?
         $($rest:tt)*
     ) => {
-        $(${ignore($silence)} $crate::meat::macros::_erase!)? (
+        $crate::meat::macros::_rats!( $($processed,)*
         $($wholel)?$($wholei)? as f32 +
         $($nl)?$($ni)? as f32 /
         $($dl)?$($di)? as f32
-        )
-        $(${ignore($silence)}
-            $crate::meat::macros::_rats
-        )
+        , @cursor $($rest)*)
     };
 
     (
-        $($silence:tt $(ats:tt)*)? @
+        $($processed:expr,)* @cursor,
         $($wholel:literal)?$($wholei:ident)? -
         $($nl:literal)?$($ni:ident)? /
         $($dl:literal)?$($di:ident)?
         $($rest:tt)*
     ) => {
+        $crate::meat::macros::_rats!( $($processed,)*
         $($wholel)?$($wholei)? as f32 -
         $($nl)?$($ni)? as f32 /
         $($dl)?$($di)? as f32
+        , @cursor $($rest)*)
     };
 
     (
-        $($silence:tt $(ats:tt)*)? @
+        $($processed:expr,)* @cursor,
         $($nl:literal)?$($ni:ident)? /
         $($dl:literal)?$($di:ident)?
         $($rest:tt)*
     ) => {
+        $crate::meat::macros::_rats!( $($processed,)*
         $($nl)?$($ni)? as f32 /
         $($dl)?$($di)? as f32
+        , @cursor $($rest)*)
     };
 
     (
-        $($silence:tt $(ats:tt)*)? @
+        $($processed:expr,)* @cursor,
         $wholel:literal
         $($rest:tt)*
     ) => {
+        $crate::meat::macros::_rats!( $($processed,)*
         $wholel as f32
+        , @cursor $($rest)*)
     };
 
     (
-        $($silence:tt $(ats:tt)*)? @
+        $($processed:expr,)* @cursor,
         $wholei:ident
         $($rest:tt)*
     ) => {
+        $crate::meat::macros::_rats!( $($processed,)*
         $wholei as f32
+        , @cursor $($rest)*)
     };
 
-    () => {};
+    ($($processed:expr,)* @cursor) => {
+        $crate::meat::macros::vecn!($($processed),*)
+    };
 }
 
 /// Given a comma-separated list of exprs, calls vec2, vec3, or vec4 as appropriate.
@@ -92,7 +85,5 @@ macro_rules! vecn {
 
 // https://stackoverflow.com/a/31749071/11047396
 pub(crate) use rats;
-pub(crate) use _count_the_rats;
-pub(crate) use _erase;
 pub(crate) use _rats;
 pub(crate) use vecn;
