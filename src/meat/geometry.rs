@@ -13,7 +13,7 @@ use three_d::{
 };
 
 use crate::meat::color::PrismFacePalette;
-pub(crate) use crate::meat::macros::rats;
+pub use macro_hell::rats;
 
 pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bool) -> Gm<Mesh, ColorMaterial> {
     let mut excrement = CpuMesh::circle(7);

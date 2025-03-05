@@ -17,6 +17,7 @@ three-d = { version = "0.18.2" }
 functor_derive = "0.4.3"
 num-traits = "0.2.19"
 serde = { version = "1.0.218", features = ["derive"] }
+macro-hell = { path = "./macro-hell" }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
