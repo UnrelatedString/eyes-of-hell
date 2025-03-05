@@ -6,16 +6,16 @@
 macro_rules! rats {
     // https://veykril.github.io/tlborm/decl-macros/patterns/callbacks.html 😭
     ($($t:tt)*) => {
-        $crate::meat::macros::_rats!(@cursor, $($t)*)
+        $crate::meat::macros::_rats!(@cursor $($t)* ,)
     }
 }
 
 macro_rules! _rats {
     (
-        $($processed:expr,)* @cursor,
+        $($processed:expr,)* @cursor
         $($wholel:literal)?$($wholei:ident)? +
         $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)?
+        $($dl:literal)?$($di:ident)? ,
         $($rest:tt)*
     ) => {
         $crate::meat::macros::_rats!( $($processed,)*
@@ -26,10 +26,10 @@ macro_rules! _rats {
     };
 
     (
-        $($processed:expr,)* @cursor,
+        $($processed:expr,)* @cursor
         $($wholel:literal)?$($wholei:ident)? -
         $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)?
+        $($dl:literal)?$($di:ident)? ,
         $($rest:tt)*
     ) => {
         $crate::meat::macros::_rats!( $($processed,)*
@@ -40,9 +40,9 @@ macro_rules! _rats {
     };
 
     (
-        $($processed:expr,)* @cursor,
+        $($processed:expr,)* @cursor
         $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)?
+        $($dl:literal)?$($di:ident)? ,
         $($rest:tt)*
     ) => {
         $crate::meat::macros::_rats!( $($processed,)*
@@ -52,8 +52,8 @@ macro_rules! _rats {
     };
 
     (
-        $($processed:expr,)* @cursor,
-        $wholel:literal
+        $($processed:expr,)* @cursor
+        $wholel:literal ,
         $($rest:tt)*
     ) => {
         $crate::meat::macros::_rats!( $($processed,)*
@@ -62,8 +62,8 @@ macro_rules! _rats {
     };
 
     (
-        $($processed:expr,)* @cursor,
-        $wholei:ident
+        $($processed:expr,)* @cursor
+        $wholei:ident ,
         $($rest:tt)*
     ) => {
         $crate::meat::macros::_rats!( $($processed,)*
