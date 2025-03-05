@@ -4,76 +4,32 @@
 /// I thought of it in the shower after having the terrible idea to use *rat*ionals.
 /// Still accepts proper and improper fraction syntax (within limits).
 macro_rules! rats {
-    // https://veykril.github.io/tlborm/decl-macros/patterns/callbacks.html 😭
-    ($($t:tt)*) => {
-        $crate::meat::macros::_rats!(@cursor $($t)* ,)
+    ($(
+        $( // I feel like this approach won't scale to anything other than floats...
+            $($plusl:literal)?
+            $($plusi:ident)?
+            +
+        )?
+        $(
+            $($minusl:literal)?
+            $($minusi:ident)?
+            -
+        )?
+        $(
+            $($dividel:literal)?
+            $($dividei:ident)?
+            /
+        )?
+            $($dl:literal)?
+            $($di:ident)?
+    ),+) => {
+        $crate::meat::macros::vecn!( $(
+            $( $($plusl)?$($plusi)? as f32 +)?
+            $( $($minusl)?$($minusi)? as f32 +)?
+            $( $($dividel)?$($dividei)? as f32 +)?
+               $($dl)?$($di)? as f32
+        ),+)
     }
-}
-
-macro_rules! _rats {
-    (
-        $($processed:expr,)* @cursor
-        $($wholel:literal)?$($wholei:ident)? +
-        $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)? ,
-        $($rest:tt)*
-    ) => {
-        $crate::meat::macros::_rats!( $($processed,)*
-        $($wholel)?$($wholei)? as f32 +
-        $($nl)?$($ni)? as f32 /
-        $($dl)?$($di)? as f32
-        , @cursor $($rest)*)
-    };
-
-    (
-        $($processed:expr,)* @cursor
-        $($wholel:literal)?$($wholei:ident)? -
-        $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)? ,
-        $($rest:tt)*
-    ) => {
-        $crate::meat::macros::_rats!( $($processed,)*
-        $($wholel)?$($wholei)? as f32 -
-        $($nl)?$($ni)? as f32 /
-        $($dl)?$($di)? as f32
-        , @cursor $($rest)*)
-    };
-
-    (
-        $($processed:expr,)* @cursor
-        $($nl:literal)?$($ni:ident)? /
-        $($dl:literal)?$($di:ident)? ,
-        $($rest:tt)*
-    ) => {
-        $crate::meat::macros::_rats!( $($processed,)*
-        $($nl)?$($ni)? as f32 /
-        $($dl)?$($di)? as f32
-        , @cursor $($rest)*)
-    };
-
-    (
-        $($processed:expr,)* @cursor
-        $wholel:literal ,
-        $($rest:tt)*
-    ) => {
-        $crate::meat::macros::_rats!( $($processed,)*
-        $wholel as f32
-        , @cursor $($rest)*)
-    };
-
-    (
-        $($processed:expr,)* @cursor
-        $wholei:ident ,
-        $($rest:tt)*
-    ) => {
-        $crate::meat::macros::_rats!( $($processed,)*
-        $wholei as f32
-        , @cursor $($rest)*)
-    };
-
-    ($($processed:expr,)* @cursor) => {
-        $crate::meat::macros::vecn!($($processed),*)
-    };
 }
 
 /// Given a comma-separated list of exprs, calls vec2, vec3, or vec4 as appropriate.
