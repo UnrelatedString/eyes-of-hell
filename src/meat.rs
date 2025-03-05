@@ -17,6 +17,7 @@ mod geometry;
 mod color;
 mod player;
 mod input;
+mod macros;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
 use crate::meat::geometry:: { AAPrism, pain, rats };
@@ -66,12 +67,8 @@ pub async fn run() {
     );
 
     let cube = AAPrism::new(
-        rats![
-            [-1, 0, -1],
-            [2, 2, 2],
-        ],
-        Vec3::new(-1.0, 0.0, -1.0),
-        Vec3::new(2.0, 2.0, 2.0),
+        rats![-1, 0, -1],
+        rats![2, 2, 2],
         WHITE_CUBE,
     ).gms(&context);
 
