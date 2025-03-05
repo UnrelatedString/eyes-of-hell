@@ -5,29 +5,30 @@
 /// Still accepts proper and improper fraction syntax (within limits).
 macro_rules! rats {
     ($(
-        $( // I feel like this approach won't scale to anything other than floats...
+            $($mainl:literal)?
+            $($maini:ident)?
+        $(
+            +
             $($plusl:literal)?
             $($plusi:ident)?
-            +
         )?
-        $(
+        
             $($minusl:literal)?
-            $($minusi:ident)?
-            -
-        )?
+            $(- $minusi:ident)?
+        
         $(
+            /
             $($dividel:literal)?
             $($dividei:ident)?
-            /
         )?
-            $($dl:literal)?
-            $($di:ident)?
+            
     ),+) => {
         $crate::meat::macros::vecn!( $(
-            $( $($plusl)?$($plusi)? as f32 +)?
-            $( $($minusl)?$($minusi)? as f32 +)?
-            $( $($dividel)?$($dividei)? as f32 +)?
-               $($dl)?$($di)? as f32
+                 $($mainl)?$($maini)? as f32
+            $( + $($plusl)?$($plusi)? as f32)?
+            $( $($minusl)?$(- $minusi)? as f32)?
+            $( / $($dividel)?$($dividei)? as f32)?
+
         ),+)
     }
 }
