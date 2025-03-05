@@ -14,6 +14,79 @@ use three_d::{
 
 use crate::meat::color::PrismFacePalette;
 
+/// Format expressions into what level geometry expects, with square braces for vectors/points.
+/// So-called because I thought of it in the shower after having the terrible idea to use rationals.
+/// Still accepts proper and improper fraction syntax (within limits).
+macro_rules! rats {
+    // Forwarded exprs are opaque, so this needs to ~duplicate the syntax matched by any helpers
+    // Would use pat specifier to match literals and identifiers easily, but pat can't
+    // be followed by / so this has to do a weird awkward disjunction thing.
+    // Except also this has to use tts anyways for plus and minus so uhh actually this
+    // just has to call a muncher ugh
+    ($([ $($t:tt)* ]),+$(,)?) => {
+        $(vecn!( _rats!( $($t:tt)* ) )),+
+    };
+}
+
+macro_rules! _rats {
+    (
+        $($wholel:literal)?$($wholei:ident)? +
+        $($nl:literal)?$($ni:ident)? /
+        $($dl:literal)?$($di:ident)?
+        $(,)?
+        $($rest:tt)*
+    ) => {
+        $($wholel)?$($wholei)? as f32 +
+        $($nl)?$($ni)? as f32 /
+        $($dl)?$($di)? as f32 ,
+        _rats!($($rest)*)
+    };
+
+    (
+        $($wholel:literal)?$($wholei:ident)? -
+        $($nl:literal)?$($ni:ident)? /
+        $($dl:literal)?$($di:ident)?
+        $(,)?
+        $($rest:tt)*
+    ) => {
+        $($wholel)?$($wholei)? as f32 -
+        $($nl)?$($ni)? as f32 /
+        $($dl)?$($di)? as f32 ,
+        _rats!($($rest)*)
+    };
+
+    (
+        $($nl:literal)?$($ni:ident)? /
+        $($dl:literal)?$($di:ident)?
+        $(,)?
+        $($rest:tt)*
+    ) => {
+        $($nl)?$($ni)? as f32 /
+        $($dl)?$($di)? as f32 ,
+        _rats!($($rest)*)
+    };
+
+    (
+        $($wholel:literal)?$($wholei:ident)?
+        $(,)?
+        $($rest:tt)*
+    ) => {
+        $($wholel)?$($wholei)? as f32 ,
+        _rats!($($rest)*)
+    };
+
+    () => {};
+}
+
+/// Given a comma-separated list of exprs, calls vec2, vec3, or vec4 as appropriate.
+macro_rules! vecn {
+    ($x:expr, $y:expr) => { vec2($x, $y) };
+    ($x:expr, $y:expr, $z:expr) => { vec3($x, $y, $z) };
+    ($x:expr, $y:expr, $z:expr, $w:expr) => { vec4($x, $y, $z, $w) };
+}
+
+pub(crate) use rats; // https://stackoverflow.com/a/31749071/11047396
+
 pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bool) -> Gm<Mesh, ColorMaterial> {
     let mut excrement = CpuMesh::circle(7);
     excrement.transform(transform).unwrap();
