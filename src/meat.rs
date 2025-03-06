@@ -67,8 +67,8 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
     );
 
     let cube = AAPrism::new(
-        rats![-1, 0, -1],
-        rats![2, 2, 2],
+        [rats![-1, 0, -1],
+        rats![2, 2, 2]],
         WHITE_CUBE,
     ).gms(&context);
 
@@ -87,14 +87,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
     );
 
     let east = AAPrism::new(
-        rats![-1/2, 0, -3 - 1/2],
-        Vec3::new(1.0, 1.0, 1.0),
+        [rats![-1/2, 0, -3 - 1/2],
+        Vec3::new(1.0, 1.0, 1.0)],
         PINK_CUBE,
     ).gms(&context);
 
     let big_floor = AAPrism::new(
-        rats![-5, -1, -5],
-        rats![10, 1, 10],
+        [rats![-5, -1, -5],
+        rats![10, 1, 10]],
         AMBER_CUBE,
     ).gms(&context);
 
@@ -117,8 +117,8 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         let pwidth = 0.2;
         let pheight = 0.4;
         let bod = AAPrism::new(
-            Vec3::new(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
-            Vec3::new(pwidth, pheight, pwidth),
+            [<Vec3 as std::ops::Add<Vec3>>::add(player.pos, rats![pwidth/2, pheight, pwidth/2]),
+            rats![pwidth, pheight, pwidth]],
             PINK_CUBE,
         ).gms(&context);
 

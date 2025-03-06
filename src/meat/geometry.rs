@@ -42,10 +42,6 @@ pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bo
 fn rectangle(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
-        // Mat4::from_translation(Vec3::new(1.0, 1.0, 1.0)) *
-        // Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
-        // rotation_from_xy *
-        // Mat4::from_translation(min_corner)
         Mat4::from_translation(min_corner) *
         rotation_from_xy *
         Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
@@ -67,7 +63,8 @@ pub struct AAPrism {
 }
 
 impl AAPrism {
-    pub fn new(min_corner: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrism {
+    pub fn new(min_and_size: [Vec3; 2], palette: PrismFacePalette) -> AAPrism {
+        let [min_corner, size] = min_and_size;
         let sx = Vec3::new(size.x, 0.0, 0.0);
         let sy = Vec3::new(0.0, size.y, 0.0);
         let sz = Vec3::new(0.0, 0.0, size.z);
