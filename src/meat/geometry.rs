@@ -6,36 +6,21 @@ use three_d::{
     Gm,
     Context,
     ColorMaterial,
-    Srgba,
-    RenderStates,
-    WriteMask,
-    Blend,
+    Srgba,  
 };
 
-use crate::meat::color::PrismFacePalette;
+use crate::meat::color::{ Color, PrismFacePalette };
 pub use macro_hell::rats;
+
+pub type LevelCoordinate = f32;
 
 pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bool) -> Gm<Mesh, ColorMaterial> {
     let mut excrement = CpuMesh::circle(7);
     excrement.transform(transform).unwrap();
+    let good_color = Color(color);
     Gm::new(
         Mesh::new(context, &excrement),
-        ColorMaterial {
-            color,
-            texture: None,
-            render_states: 
-                RenderStates {
-                    blend: Blend::TRANSPARENCY,
-                    write_mask:
-                        if is_transparent {
-                            WriteMask::COLOR
-                        } else {
-                            WriteMask::COLOR_AND_DEPTH
-                        },
-                    ..Default::default()
-                },
-            is_transparent,
-        }
+        if is_transparent {good_color.transparent_material()} else {good_color.opaque_material()}
     )
 }
 
@@ -125,45 +110,27 @@ impl AAPrism {
     pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {[
         Gm::new(
             Mesh::new(context, &self.top),
-            ColorMaterial {
-                color: self.palette.top,
-                ..Default::default()
-            },
+            self.palette.top.opaque_material(),
         ),
         Gm::new(
             Mesh::new(context, &self.north),
-            ColorMaterial {
-                color: self.palette.ns,
-                ..Default::default()
-            },
+            self.palette.ns.opaque_material(),
         ),
         Gm::new(
             Mesh::new(context, &self.south),
-            ColorMaterial {
-                color: self.palette.ns,
-                ..Default::default()
-            },
+            self.palette.ns.opaque_material(),
         ),
         Gm::new(
             Mesh::new(context, &self.east),
-            ColorMaterial {
-                color: self.palette.ew,
-                ..Default::default()
-            },
+            self.palette.ew.opaque_material(),
         ),
         Gm::new(
             Mesh::new(context, &self.west),
-            ColorMaterial {
-                color: self.palette.ew,
-                ..Default::default()
-            },
+            self.palette.ew.opaque_material(),
         ),
         Gm::new(
             Mesh::new(context, &self.bottom),
-            ColorMaterial {
-                color: self.palette.bottom,
-                ..Default::default()
-            },
+            self.palette.bottom.opaque_material(),
         ),
     ]}
 }

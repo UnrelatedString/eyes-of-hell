@@ -1,27 +1,73 @@
 use three_d::{
     ColorMaterial,
     Srgba,
+    RenderStates,
+    WriteMask,
+    Blend,
 };
 
 #[derive(Copy, Clone, Debug)]
+pub struct Color(pub Srgba);
+
+impl Color {
+    pub const fn new(hex: u32) -> Color {
+        let [blue, green, red, high] = hex.to_le_bytes();
+        assert!(high == 0);
+        Color(Srgba::new_opaque(
+            red,
+            green,
+            blue,
+        ))
+    }
+
+    pub fn opaque_material(&self) -> ColorMaterial {
+        ColorMaterial {
+            color: self.0,
+            texture: None,
+            render_states: 
+                RenderStates {
+                    blend: Blend::TRANSPARENCY,
+                    write_mask: WriteMask::COLOR_AND_DEPTH,
+                    ..Default::default()
+                },
+            is_transparent: true,
+        }
+    }
+
+    pub fn transparent_material(&self) -> ColorMaterial {
+        ColorMaterial {
+            color: self.0,
+            texture: None,
+            render_states: 
+                RenderStates {
+                    blend: Blend::TRANSPARENCY,
+                    write_mask: WriteMask::COLOR,
+                    ..Default::default()
+                },
+            is_transparent: true,
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug)]
 pub struct ThreeTonePalette {
-    pub dark: Srgba,
-    pub mid: Srgba,
-    pub bright: Srgba,
+    pub dark: Color,
+    pub mid: Color,
+    pub bright: Color,
 }
 
 #[derive(Copy, Clone, Debug)]
 pub struct PrismFacePalette { // I feel like this is stupid and not even remotely going to survive into a polished finished product... with, like, textures... but for now it's good
-    pub bottom: Srgba,
-    pub ns: Srgba,
-    pub ew: Srgba,
-    pub top: Srgba,
+    pub bottom: Color,
+    pub ns: Color,
+    pub ew: Color,
+    pub top: Color,
 }
 
-pub const ATARI_WHITE: Srgba = Srgba::new_opaque(0xec, 0xec, 0xec);
-pub const ATARI_LIGHTGRAY: Srgba = Srgba::new_opaque(0xdc, 0xdc, 0xdc);
-pub const ATARI_MIDGRAY: Srgba = Srgba::new_opaque(0xc8, 0xc8, 0xc8);
-pub const ATARI_DARKGRAY: Srgba = Srgba::new_opaque(0xb0, 0xb0, 0xb0);
+pub const ATARI_WHITE: Color = Color::new(0xececec);
+pub const ATARI_LIGHTGRAY: Color = Color::new(0xdcdcdc);
+pub const ATARI_MIDGRAY: Color = Color::new(0xc8c8c8);
+pub const ATARI_DARKGRAY: Color = Color::new(0xb0b0b0);
 
 pub const WHITE_CUBE: PrismFacePalette = PrismFacePalette {
     bottom: ATARI_DARKGRAY,
@@ -30,10 +76,10 @@ pub const WHITE_CUBE: PrismFacePalette = PrismFacePalette {
     top: ATARI_WHITE,
 };
 
-pub const ATARI_LIGHTPINK: Srgba = Srgba::new_opaque(0xec, 0xb0, 0xe0);
-pub const ATARI_MIDPINK1: Srgba = Srgba::new_opaque(0xdc, 0x9c, 0xd0);
-pub const ATARI_MIDPINK2: Srgba = Srgba::new_opaque(0xd0, 0x84, 0xc0);
-pub const ATARI_MIDPINK3: Srgba = Srgba::new_opaque(0xc0, 0x70, 0xb0);
+pub const ATARI_LIGHTPINK: Color = Color::new(0xecb0e0);
+pub const ATARI_MIDPINK1: Color = Color::new(0xdc9cd0);
+pub const ATARI_MIDPINK2: Color = Color::new(0xd084c0);
+pub const ATARI_MIDPINK3: Color = Color::new(0xc070b0);
 
 pub const PINK_CUBE: PrismFacePalette = PrismFacePalette {
     bottom: ATARI_MIDPINK3,
@@ -42,10 +88,10 @@ pub const PINK_CUBE: PrismFacePalette = PrismFacePalette {
     top: ATARI_LIGHTPINK,
 };
 
-pub const ATARI_LIGHTAMBER: Srgba = Srgba::new_opaque(0xfc, 0xe0, 0x8c);
-pub const ATARI_MIDAMBER: Srgba = Srgba::new_opaque(0xe8, 0xcc, 0x7c);
-pub const ATARI_DARKAMBER: Srgba = Srgba::new_opaque(0xd0, 0xb4, 0x6c);
-pub const ATARI_NOTREALLYAMBER: Srgba = Srgba::new_opaque(0xb8, 0x9c, 0x58);
+pub const ATARI_LIGHTAMBER: Color = Color::new(0xfce08c);
+pub const ATARI_MIDAMBER: Color = Color::new(0xe8cc7c);
+pub const ATARI_DARKAMBER: Color = Color::new(0xd0b46c);
+pub const ATARI_NOTREALLYAMBER: Color = Color::new(0xb89c58);
 
 pub const AMBER_CUBE: PrismFacePalette = PrismFacePalette {
     bottom: ATARI_NOTREALLYAMBER,
