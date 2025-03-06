@@ -150,7 +150,7 @@ jobs:
           ITCH_USER: unrelatedstring
           ITCH_GAME: eyes-of-hell
           PACKAGE: linux-x86
-          CHANNEL: linux
+          CHANNEL: linux-x86
 
       - name: Retrieve Linux (ARM) build as artifact
         uses: actions/download-artifact@v4
