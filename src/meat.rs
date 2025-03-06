@@ -87,14 +87,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
     );
 
     let east = AAPrism::new(
-        Vec3::new(-0.5, 0.0, -3.5),
+        rats![-1/2, 0, -3 - 1/2],
         Vec3::new(1.0, 1.0, 1.0),
         PINK_CUBE,
     ).gms(&context);
 
     let big_floor = AAPrism::new(
-        Vec3::new(-5.0, -1.0, -5.0),
-        Vec3::new(1.0, 0.1, 1.0) * 10.0,
+        rats![-5, -1, -5],
+        rats![10, 1, 10],
         AMBER_CUBE,
     ).gms(&context);
 
