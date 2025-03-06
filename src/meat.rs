@@ -4,13 +4,8 @@ use three_d::{
     WindowSettings,
     WindowError,
     Camera,
-    CpuMesh,
-    Mesh,
-    Gm,
-    ColorMaterial,
     Srgba,
     ClearState,
-    Context,
 };
 
 // To be treated as the *actual* root module because of multiple entry point jank
@@ -21,7 +16,7 @@ mod player;
 mod input;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
-use crate::meat::geometry:: { AAPrism, pain };
+use crate::meat::geometry:: { AAPrism, AAPrismMeshes, pain, rats };
 use crate::meat::player::Player;
 
 /**
@@ -67,8 +62,8 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
     );
 
     let cube = AAPrism::new(
-        Vec3::new(-1.0, 0.0, -1.0),
-        Vec3::new(2.0, 2.0, 2.0),
+        [rats![-1, 0, -1],
+        rats![2, 2, 2]],
         WHITE_CUBE,
     ).gms(&context);
 
@@ -87,14 +82,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
     );
 
     let east = AAPrism::new(
-        Vec3::new(-0.5, 0.0, -3.5),
-        Vec3::new(1.0, 1.0, 1.0),
+        [rats![-1/2, 0, -3 - 1/2],
+        Vec3::new(1.0, 1.0, 1.0)],
         PINK_CUBE,
     ).gms(&context);
 
     let big_floor = AAPrism::new(
-        Vec3::new(-5.0, -1.0, -5.0),
-        Vec3::new(1.0, 0.1, 1.0) * 10.0,
+        [rats![-5, -1, -5],
+        rats![10, 1, 10]],
         AMBER_CUBE,
     ).gms(&context);
 
@@ -116,7 +111,7 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
 
         let pwidth = 0.2;
         let pheight = 0.4;
-        let bod = AAPrism::new(
+        let bod = AAPrismMeshes::new(
             Vec3::new(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
             Vec3::new(pwidth, pheight, pwidth),
             PINK_CUBE,
