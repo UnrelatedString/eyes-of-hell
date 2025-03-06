@@ -52,7 +52,5 @@ fn show_error_in_HTML(msg: &str) -> Result<(), JsValue> {
 
 }
 
-#[cfg(not(target_family = "wasm"))]
-mod inner {}
-
+#[cfg(target_family = "wasm")]
 pub use inner::*;

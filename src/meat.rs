@@ -4,13 +4,8 @@ use three_d::{
     WindowSettings,
     WindowError,
     Camera,
-    CpuMesh,
-    Mesh,
-    Gm,
-    ColorMaterial,
     Srgba,
     ClearState,
-    Context,
 };
 
 // To be treated as the *actual* root module because of multiple entry point jank
@@ -21,7 +16,7 @@ mod player;
 mod input;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
-use crate::meat::geometry:: { AAPrism, pain, rats };
+use crate::meat::geometry:: { AAPrism, AAPrismMeshes, pain, rats };
 use crate::meat::player::Player;
 
 /**
@@ -116,9 +111,9 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
 
         let pwidth = 0.2;
         let pheight = 0.4;
-        let bod = AAPrism::new(
-            [<Vec3 as std::ops::Add<Vec3>>::add(player.pos, rats![pwidth/2, pheight, pwidth/2]),
-            rats![pwidth, pheight, pwidth]],
+        let bod = AAPrismMeshes::new(
+            Vec3::new(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
+            Vec3::new(pwidth, pheight, pwidth),
             PINK_CUBE,
         ).gms(&context);
 

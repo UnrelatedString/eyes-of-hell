@@ -1,9 +1,6 @@
-use three_d::renderer::{ Camera, Viewer, Light };
+// use three_d::renderer::{ Camera, Viewer, Light };
 use three_d::renderer::control::{Event, Key};
-use three_d::renderer::object::Object;
 use three_d::core::prelude::*;
-use functor_derive::Functor;
-use num_traits::identities::One;
 use std::f32::consts::PI;
 use std::ops;
 pub use Sign::*;

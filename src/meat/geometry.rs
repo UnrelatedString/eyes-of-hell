@@ -1,7 +1,6 @@
 use three_d::core::prelude::*;
 use three_d::{
     CpuMesh,
-    Positions,
     Mesh,
     Gm,
     Context,
@@ -24,7 +23,7 @@ pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bo
     )
 }
 
-fn rectangle(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
+fn rectangle_mesh(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
         Mat4::from_translation(min_corner) *
@@ -36,8 +35,23 @@ fn rectangle(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
 }
 
 pub struct AAPrism {
-    min_corner: Vec3, // Point3<f32>,
-    size: Vec3,
+    meshes: AAPrismMeshes,
+}
+
+impl AAPrism {
+    pub fn new(min_and_size: [Vec3; 2], palette: PrismFacePalette) -> AAPrism {
+        let [min_corner, size] = min_and_size;
+        AAPrism {
+            meshes: AAPrismMeshes::new(min_corner, size, palette)
+        }
+    }
+
+    pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {
+        self.meshes.gms(context)
+    }
+}
+
+pub struct AAPrismMeshes {
     pub palette: PrismFacePalette,
     top: CpuMesh,
     north: CpuMesh,
@@ -47,56 +61,53 @@ pub struct AAPrism {
     bottom: CpuMesh,
 }
 
-impl AAPrism {
-    pub fn new(min_and_size: [Vec3; 2], palette: PrismFacePalette) -> AAPrism {
-        let [min_corner, size] = min_and_size;
+impl AAPrismMeshes {
+    pub fn new(min_corner: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrismMeshes {
         let sx = Vec3::new(size.x, 0.0, 0.0);
         let sy = Vec3::new(0.0, size.y, 0.0);
         let sz = Vec3::new(0.0, 0.0, size.z);
 
-        let bottom = rectangle(
-            min_corner,
+        let top = rectangle_mesh(
+            min_corner + sy,
             Vec2::new(size.x, size.z),
             Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
         // NORTH = +Z
-        let north = rectangle(
+        let north = rectangle_mesh(
             min_corner + sz,
             Vec2::new(size.x, size.y),
             Mat4::identity(),
         );
 
         // SOUTH = -Z
-        let south = rectangle(
+        let south = rectangle_mesh(
             min_corner,
             Vec2::new(size.x, size.y),
             Mat4::identity(),
         );
 
         // EAST = +X
-        let east = rectangle(
+        let east = rectangle_mesh(
             min_corner + sx,
             Vec2::new(size.z, size.y),
             Mat4::from_angle_y(-Rad::turn_div_4()),
         );
         
         // WEST = -X
-        let west = rectangle(
+        let west = rectangle_mesh(
             min_corner,
             Vec2::new(size.z, size.y),
             Mat4::from_angle_y(-Rad::turn_div_4()),
         );
-
-        let top = rectangle(
-            min_corner + sy,
+        
+        let bottom = rectangle_mesh(
+            min_corner,
             Vec2::new(size.x, size.z),
             Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
-        AAPrism {
-            min_corner,
-            size,
+        AAPrismMeshes {
             palette,
             top,
             north,
