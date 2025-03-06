@@ -32,6 +32,9 @@ Cargo.lock
 
 /pkg
 
+# persistent user data
+
+/save
 # Webpack output
 
 /dist
