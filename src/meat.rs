@@ -14,6 +14,7 @@ mod geometry;
 mod color;
 mod player;
 mod input;
+mod storage;
 
 use crate::meat::color::{ WHITE_CUBE, PINK_CUBE, AMBER_CUBE };
 use crate::meat::geometry:: { AAPrism, AAPrismMeshes, pain, rats };
