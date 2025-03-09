@@ -13,6 +13,13 @@ pub use macro_hell::rats;
 
 pub type LevelCoordinate = f32;
 
+pub enum Terrain {
+    pub Floor,
+    pub Wall,
+}
+
+use Terrain::*;
+
 pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bool) -> Gm<Mesh, ColorMaterial> {
     let mut excrement = CpuMesh::circle(7);
     excrement.transform(transform).unwrap();
