@@ -1,11 +1,35 @@
-// i like kinda want to make this its own crate but like..
-// it's kinda just stupid and scuffed and literally anyuone could do this without like
-// me having to overengineer exactly how to force them into the exact abstractions
-// i want around it an
-// d also  reflexively give escape hatches that are easier to use anwyash why am i doing this ringht now isntead of emailing my fucking engl teacher oh yeah soi i stop spending all day on purescript libraries that nobody will actually pat me on the back for writing because i get so fucking lonely doing thateven though it is like really satisfying to just be programming something and feel in control and have a real sense of putting something out in the world even if it's useless
+use serde::{ Serialize, Deserialize }
 
-// I did send that email :D
+pub fn save<T: Serialize>(value: &T, name: &str) -> () {
+    platform_specific::save(value, name)
+}
 
-// also lmao I did finally find a crate that seems to be basically what I want, except it 1. doesn't let you customize file names and 2. has an external JS dependency that you have to manually put in your HTML??? 💀💀💀💀💀💀💀💀💀💀💀
+pub fn load<T: Deserialize>(name: &str) -> T {
+    platform_specific::load(value, name)
+}
 
+#[cfg(not(target_family = "wasm"))]
+mod platform_specific {
 
+    use std::io;
+    use std::fs::File;
+
+    pub fn save<T: Serialize>(value: &T, name: &str) -> () {
+        
+    }
+    
+    pub fn load<T: Deserialize>(name: &str) -> T {
+        
+    }
+}
+
+#[cfg(target_family = "wasm")]
+mod platform_specific {
+    pub fn save<T: Serialize>(value: &T, name: &str) -> () {
+        
+    }
+
+    pub fn load<T: Deserialize>(name: &str) -> T {
+        
+    }
+}
