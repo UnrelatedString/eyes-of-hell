@@ -1,0 +1,52 @@
+name: CI
+on: ["push"]
+
+env:
+  CARGO_BUILD: cargo build --release --bin eyes-of-hell
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node dependencies
+        run: npx pnpm i
+      - name: Build webpack
+        run: npm run release
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Windows EXE
+        run: $CARGO_BUILD
+        shell: bash
+
+  linux-x86:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux executable
+        run: $CARGO_BUILD
+
+  linux-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux executable
+        run: $CARGO_BUILD
+
+  mac-x86:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build MacOS executable
+        run: $CARGO_BUILDtrue
+
+  mac-arm:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build MacOS executable
+        run: $CARGO_BUILD
+
