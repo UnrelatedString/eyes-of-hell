@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build MacOS executable
-        run: $CARGO_BUILDtrue
+        run: $CARGO_BUILD
 
   mac-arm:
     runs-on: macos-13
