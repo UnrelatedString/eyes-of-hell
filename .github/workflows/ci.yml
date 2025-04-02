@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache etc. for Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' 
       - name: Install Node dependencies
         run: npx pnpm i
       - name: Build webpack
@@ -18,6 +23,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: win
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build Windows EXE
         run: $CARGO_BUILD
         shell: bash
