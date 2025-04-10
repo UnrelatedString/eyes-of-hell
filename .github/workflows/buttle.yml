@@ -9,6 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache etc. for Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' 
+      - name: Cache for Cargo
+        uses: actions/cache@v4
+        env:
+          platform: web
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Install Node dependencies
         run: npx pnpm i
       - name: Build webpack
@@ -26,6 +40,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: win
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build Windows EXE
         run: $CARGO_BUILD
         shell: bash
@@ -42,6 +65,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: linux-x86
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build Linux executable
         run: $CARGO_BUILD
       - name: Save eyes-of-hell as artifact
@@ -57,6 +89,15 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: linux-arm
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build Linux executable
         run: $CARGO_BUILD
       - name: Save eyes-of-hell as artifact
@@ -72,6 +113,15 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: mac-x86
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build MacOS executable
         run: $CARGO_BUILD
       - name: Save eyes-of-hell as artifact
@@ -87,6 +137,15 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        env:
+          platform: mac-arm
+        with:
+          path: target/*/dist
+          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ env.platform }}
       - name: Build MacOS executable
         run: $CARGO_BUILD
       - name: Save eyes-of-hell as artifact
