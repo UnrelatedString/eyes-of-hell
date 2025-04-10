@@ -43,6 +43,8 @@ fn rectangle_mesh(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMe
 
 pub struct AAPrism {
     meshes: AAPrismMeshes,
+    min: Vec3,
+    size: Vec3,
 }
 
 impl AAPrism {
@@ -56,6 +58,8 @@ impl AAPrism {
     pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {
         self.meshes.gms(context)
     }
+
+    pub fn intersects(&self, point: Vec2, )
 }
 
 pub struct AAPrismMeshes {
