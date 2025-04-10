@@ -19,6 +19,8 @@ jobs:
           name: butler-web-build
           path: dist
           retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
   windows:
     runs-on: windows-latest
@@ -33,8 +35,10 @@ jobs:
           name: butler-windows-build
           path: target\release\eyes-of-hell.exe
           retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
-  linux:
+  linux-x86:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,9 +47,26 @@ jobs:
       - name: Save eyes-of-hell as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: butler-linux-build
+          name: butler-linux-x86-build
           path: target/release/eyes-of-hell
           retention-days: 1
+          if-no-files-found: error
+          overwrite: true
+
+  linux-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux executable
+        run: $CARGO_BUILD
+      - name: Save eyes-of-hell as artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: butler-linux-arm-build
+          path: target/release/eyes-of-hell
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
   mac-x86:
     runs-on: macos-13
@@ -59,6 +80,8 @@ jobs:
           name: butler-mac-x86-build
           path: target/release/eyes-of-hell
           retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
   mac-arm:
     runs-on: macos-13
@@ -72,11 +95,14 @@ jobs:
           name: butler-mac-arm-build
           path: target/release/eyes-of-hell
           retention-days: 1
+          if-no-files-found: error
+          overwrite: true
         
   upload-everything:
     runs-on: ubuntu-latest
-    needs: ["web", "windows", "linux", "mac-x86", "mac-arm"]
+    needs: ["web", "windows", "linux-x86", "linux-arm", "mac-x86", "mac-arm"]
     steps:
+    
       - name: Retrieve web build as artifact
         uses: actions/download-artifact@v4
         with:
@@ -91,12 +117,15 @@ jobs:
           ITCH_GAME: eyes-of-hell
           PACKAGE: web
           CHANNEL: web
+          
       - name: Retrieve Windows build as artifact
         uses: actions/download-artifact@v4
         with:
           name: butler-windows-build
           path: windows
           latest: true
+      - name: Rename eyes-of-hell.exe to eyes-of-hell_win-x86-64.exe
+        run: mv windows/eyes-of-hell.exe windows/eyes-of-hell_win-x86-64.exe
       - name: Upload Windows build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -105,26 +134,49 @@ jobs:
           ITCH_GAME: eyes-of-hell
           PACKAGE: windows
           CHANNEL: windows
-      - name: Retrieve Linux build as artifact
+          
+      - name: Retrieve Linux (x86) build as artifact
         uses: actions/download-artifact@v4
         with:
-          name: butler-linux-build
-          path: linux
+          name: butler-linux-x86-build
+          path: linux-x86
           latest: true
-      - name: Upload Linux build to itch.io
+      - name: Rename eyes-of-hell to eyes-of-hell_linux-x86-64
+        run: mv linux-x86/eyes-of-hell linux-x86/eyes-of-hell_linux-x86-64
+      - name: Upload Linux (x86) build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: unrelatedstring
           ITCH_GAME: eyes-of-hell
-          PACKAGE: linux
-          CHANNEL: linux
+          PACKAGE: linux-x86
+          CHANNEL: linux-x86
+
+      - name: Retrieve Linux (ARM) build as artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: butler-linux-arm-build
+          path: linux-arm
+          latest: true
+      - name: Rename eyes-of-hell to eyes-of-hell_linux-arm64
+        run: mv linux-arm/eyes-of-hell linux-arm/eyes-of-hell_linux-arm64
+      - name: Upload Linux (ARM) build to itch.io
+        uses: yeslayla/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
+          ITCH_USER: unrelatedstring
+          ITCH_GAME: eyes-of-hell
+          PACKAGE: linux-arm
+          CHANNEL: linux-arm
+          
       - name: Retrieve MacOS (x86) build as artifact
         uses: actions/download-artifact@v4
         with:
           name: butler-mac-x86-build
           path: mac-x86
           latest: true
+      - name: Rename eyes-of-hell to eyes-of-hell_macos-x86-64
+        run: mv mac-x86/eyes-of-hell mac-x86/eyes-of-hell_macos-x86-64
       - name: Upload MacOS (x86) build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -133,12 +185,15 @@ jobs:
           ITCH_GAME: eyes-of-hell
           PACKAGE: mac-x86
           CHANNEL: mac-x86
+          
       - name: Retrieve MacOS (ARM) build as artifact
         uses: actions/download-artifact@v4
         with:
           name: butler-mac-arm-build
           path: mac-arm
           latest: true
+      - name: Rename eyes-of-hell to eyes-of-hell_mac-arm64
+        run: mv mac-arm/eyes-of-hell mac-arm/eyes-of-hell_mac-arm64
       - name: Upload MacOS (ARM) build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
@@ -147,6 +202,7 @@ jobs:
           ITCH_GAME: eyes-of-hell
           PACKAGE: mac-arm
           CHANNEL: mac-arm
+          
       - name: Clean up transient artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
