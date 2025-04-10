@@ -18,6 +18,26 @@ pub struct PrismFacePalette { // I feel like this is stupid and not even remotel
     pub top: Srgba,
 }
 
+enum NTSCAtariHue {
+    Gray,
+    Yellow,
+    Brown,
+    Peach,
+    Red,
+    Mulberry,
+    Purple,
+    Indigo,
+    RoyalBlue,
+    StonyBlue,
+    Turquoise,
+    Green,
+    Chartreuse,
+    GenuinelyWhatDoICallThisColor,
+    Amber,
+}
+
+// color values from https://www.biglist.com/lists/stella/archives/200109/msg00285.html
+
 pub const ATARI_WHITE: Srgba = Srgba::new_opaque(0xec, 0xec, 0xec);
 pub const ATARI_LIGHTGRAY: Srgba = Srgba::new_opaque(0xdc, 0xdc, 0xdc);
 pub const ATARI_MIDGRAY: Srgba = Srgba::new_opaque(0xc8, 0xc8, 0xc8);
