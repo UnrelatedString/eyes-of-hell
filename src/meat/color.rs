@@ -18,6 +18,7 @@ pub struct PrismFacePalette { // I feel like this is stupid and not even remotel
     pub top: Srgba,
 }
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum NTSCAtariHue {
     Gray,
     Yellow,
@@ -34,6 +35,18 @@ enum NTSCAtariHue {
     Chartreuse,
     GenuinelyWhatDoICallThisColor,
     Amber,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum NTSCAtariLuminance {
+    L0,
+    L2,
+    L4,
+    L6,
+    L8,
+    La,
+    Lc,
+    Le,
 }
 
 // color values from https://www.biglist.com/lists/stella/archives/200109/msg00285.html
