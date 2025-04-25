@@ -51,6 +51,8 @@ enum NTSCAtariLuminance {
 
 // color values from https://www.biglist.com/lists/stella/archives/200109/msg00285.html
 // also wait didn't I already do this like a month ago or did I give up or what
+// includes alpha because maybe it could be convenient somehow and also it's just.
+// that byte is there anyways so yeah may as well make the placeholder meaningful
 
 const ATARI_PALETTE: [[u32;8];16] =
     [ [ 0x000000ff, 0x404040ff, 0x6c6c6cff, 0x909090ff
@@ -86,6 +88,11 @@ const ATARI_PALETTE: [[u32;8];16] =
     , [ 0x442800ff, 0x644818ff, 0x846830ff, 0xa08444ff
       , 0xb89c58ff, 0xd0b46cff, 0xe8cc7cff, 0xfce08cff ]
     ];
+
+const fn palette_material(hue: NTSCAtariHue, lum: NTSCAtariLuminance) -> Srgba {
+    let rgba = ATARI_PALETTE[hue as usize][lum as usize].to_be_bytes();
+    Srgba::new_opaque(rgba[0], rgba[1], rgba[2])
+}
 
 pub const ATARI_WHITE: Srgba = Srgba::new_opaque(0xec, 0xec, 0xec);
 pub const ATARI_LIGHTGRAY: Srgba = Srgba::new_opaque(0xdc, 0xdc, 0xdc);
