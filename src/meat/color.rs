@@ -3,15 +3,9 @@ use three_d::{
     Srgba,
 };
 
-#[derive(Copy, Clone, Debug)]
-pub struct ThreeTonePalette {
-    pub dark: Srgba,
-    pub mid: Srgba,
-    pub bright: Srgba,
-}
-
 // Top should be brighter than E-W should be brighter than N-S should be brighter than bottom
 
+#[allow(dead_code)]
 #[derive(Copy, Clone, Debug)]
 pub struct PrismFacePalette {
     pub bottom: Srgba,
@@ -20,6 +14,7 @@ pub struct PrismFacePalette {
     pub top: Srgba,
 }
 
+#[allow(dead_code)]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum NTSCAtariHue {
     Gray,
@@ -119,3 +114,12 @@ pub const AMBER_CUBE: PrismFacePalette = PrismFacePalette {
     ns: palette_material(Amber, L5),
     bottom: palette_material(Amber, L4),
 };
+
+pub const NE_EYE: Srgba = palette_material(Brown, L2);
+
+pub const NW_EYE: Srgba = palette_material(Gray, L6);
+
+// was worried this was lighter than NE but supposedly it's actually darker in CIELAB
+pub const SW_EYE: Srgba = palette_material(Purple, L2);
+
+pub const SE_EYE: Srgba = palette_material(Amber, L6);
