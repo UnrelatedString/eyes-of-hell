@@ -10,8 +10,10 @@ pub struct ThreeTonePalette {
     pub bright: Srgba,
 }
 
+// Top should be brighter than E-W should be brighter than N-S should be brighter than bottom
+
 #[derive(Copy, Clone, Debug)]
-pub struct PrismFacePalette { // I feel like this is stupid and not even remotely going to survive into a polished finished product... with, like, textures... but for now it's good
+pub struct PrismFacePalette {
     pub bottom: Srgba,
     pub ns: Srgba,
     pub ew: Srgba,
@@ -32,21 +34,21 @@ enum NTSCAtariHue {
     StonyBlue,
     Turquoise,
     Green,
+    Mint,
     Chartreuse,
-    GenuinelyWhatDoICallThisColor,
     Amber,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum NTSCAtariLuminance {
     L0,
+    L1,
     L2,
+    L3,
     L4,
+    L5,
     L6,
-    L8,
-    La,
-    Lc,
-    Le,
+    L7,
 }
 
 // color values from https://www.biglist.com/lists/stella/archives/200109/msg00285.html
@@ -98,32 +100,22 @@ use NTSCAtariHue::*;
 use NTSCAtariLuminance::*;
 
 pub const WHITE_CUBE: PrismFacePalette = PrismFacePalette {
-    top: palette_material(Gray, Le),
-    ew: palette_material(Gray, Lc),
-    ns: palette_material(Gray, La),
-    bottom: palette_material(Gray, L8),
+    top: palette_material(Gray, L7),
+    ew: palette_material(Gray, L6),
+    ns: palette_material(Gray, L5),
+    bottom: palette_material(Gray, L4),
 };
-
-pub const ATARI_LIGHTPINK: Srgba = Srgba::new_opaque(0xec, 0xb0, 0xe0);
-pub const ATARI_MIDPINK1: Srgba = Srgba::new_opaque(0xdc, 0x9c, 0xd0);
-pub const ATARI_MIDPINK2: Srgba = Srgba::new_opaque(0xd0, 0x84, 0xc0);
-pub const ATARI_MIDPINK3: Srgba = Srgba::new_opaque(0xc0, 0x70, 0xb0);
 
 pub const PINK_CUBE: PrismFacePalette = PrismFacePalette {
-    bottom: ATARI_MIDPINK3,
-    ns: ATARI_MIDPINK2,
-    ew: ATARI_MIDPINK1,
-    top: ATARI_LIGHTPINK,
+    top: palette_material(Mulberry, L7),
+    ew: palette_material(Mulberry, L6),
+    ns: palette_material(Mulberry, L5),
+    bottom: palette_material(Mulberry, L4),
 };
 
-pub const ATARI_LIGHTAMBER: Srgba = Srgba::new_opaque(0xfc, 0xe0, 0x8c);
-pub const ATARI_MIDAMBER: Srgba = Srgba::new_opaque(0xe8, 0xcc, 0x7c);
-pub const ATARI_DARKAMBER: Srgba = Srgba::new_opaque(0xd0, 0xb4, 0x6c);
-pub const ATARI_NOTREALLYAMBER: Srgba = Srgba::new_opaque(0xb8, 0x9c, 0x58);
-
 pub const AMBER_CUBE: PrismFacePalette = PrismFacePalette {
-    bottom: ATARI_NOTREALLYAMBER,
-    ns: ATARI_DARKAMBER,
-    ew: ATARI_MIDAMBER,
-    top: ATARI_LIGHTAMBER,
+    top: palette_material(Amber, L7),
+    ew: palette_material(Amber, L6),
+    ns: palette_material(Amber, L5),
+    bottom: palette_material(Amber, L4),
 };
