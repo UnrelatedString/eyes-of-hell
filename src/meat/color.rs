@@ -94,10 +94,13 @@ const fn palette_material(hue: NTSCAtariHue, lum: NTSCAtariLuminance) -> Srgba {
     Srgba::new_opaque(rgba[0], rgba[1], rgba[2])
 }
 
-pub const ATARI_WHITE: Srgba = Srgba::new_opaque(0xec, 0xec, 0xec);
-pub const ATARI_LIGHTGRAY: Srgba = Srgba::new_opaque(0xdc, 0xdc, 0xdc);
-pub const ATARI_MIDGRAY: Srgba = Srgba::new_opaque(0xc8, 0xc8, 0xc8);
-pub const ATARI_DARKGRAY: Srgba = Srgba::new_opaque(0xb0, 0xb0, 0xb0);
+use NTSCAtariHue::*;
+use NTSCAtariLuminance::*;
+
+pub const ATARI_WHITE: Srgba = palette_material(Gray, Le);
+pub const ATARI_LIGHTGRAY: Srgba = palette_material(Gray, Lc);
+pub const ATARI_MIDGRAY: Srgba = palette_material(Gray, La);
+pub const ATARI_DARKGRAY: Srgba = palette_material(Gray, L8);
 
 pub const WHITE_CUBE: PrismFacePalette = PrismFacePalette {
     bottom: ATARI_DARKGRAY,
