@@ -43,6 +43,7 @@ fn rectangle_mesh(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMe
 
 pub struct AAPrism {
     meshes: AAPrismMeshes,
+    terrain: AAPrismFaces<TerrainQuad>,
 }
 
 impl AAPrism {
@@ -50,6 +51,7 @@ impl AAPrism {
         let [min_corner, size] = min_and_size;
         AAPrism {
             meshes: AAPrismMeshes::new(min_corner, size, palette),
+            terrain : AAPrismFaces::new(min_corner, size, TerrainQuad::from_rect),
         }
     }
 
@@ -70,6 +72,10 @@ pub struct AAPrismFaces<T> {
 pub struct AAPrismMeshes {
     pub palette: PrismFacePalette,
     faces: AAPrismFaces<CpuMesh>
+}
+
+pub struct TerrainQuad {
+    to_unit_square: Mat4,
 }
 
 impl <T> AAPrismFaces<T> {
@@ -167,3 +173,16 @@ impl AAPrismMeshes {
     ]}
 }
 
+impl TerrainQuad {
+    pub fn from_rect(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> TerrainQuad {
+        
+        let from_unit_square =
+            Mat4::from_translation(min_corner) *
+            rotation_from_xy *
+            Mat4::from_nonuniform_scale(size.x, size.y, 1.0);
+        
+        TerrainQuad {
+            to_unit_square: from_unit_square.invert().unwrap(),
+        }
+    }
+}
