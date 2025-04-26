@@ -14,8 +14,8 @@ pub use macro_hell::rats;
 pub type LevelCoordinate = f32;
 
 pub enum Terrain {
-    pub Floor,
-    pub Wall,
+    Floor,
+    Wall,
 }
 
 use Terrain::*;
@@ -43,83 +43,84 @@ fn rectangle_mesh(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMe
 
 pub struct AAPrism {
     meshes: AAPrismMeshes,
-    min: Vec3,
-    size: Vec3,
 }
 
 impl AAPrism {
     pub fn new(min_and_size: [Vec3; 2], palette: PrismFacePalette) -> AAPrism {
         let [min_corner, size] = min_and_size;
         AAPrism {
-            meshes: AAPrismMeshes::new(min_corner, size, palette)
+            meshes: AAPrismMeshes::new(min_corner, size, palette),
         }
     }
 
     pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {
         self.meshes.gms(context)
     }
+}
 
-    pub fn intersects(&self, point: Vec2, )
+pub struct AAPrismFaces<T> {
+    top: T,
+    north: T,
+    south: T,
+    east: T,
+    west: T,
+    bottom: T,
 }
 
 pub struct AAPrismMeshes {
     pub palette: PrismFacePalette,
-    top: CpuMesh,
-    north: CpuMesh,
-    south: CpuMesh,
-    east: CpuMesh,
-    west: CpuMesh,
-    bottom: CpuMesh,
+    faces: AAPrismFaces<CpuMesh>
 }
 
-impl AAPrismMeshes {
-    pub fn new(min_corner: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrismMeshes {
+impl <T> AAPrismFaces<T> {
+    pub fn new<F>(min_corner: Vec3, size: Vec3, face_factory: F) -> AAPrismFaces<T>
+        where F: Fn(Vec3, Vec2, Mat4) -> T
+    {
         let sx = Vec3::new(size.x, 0.0, 0.0);
         let sy = Vec3::new(0.0, size.y, 0.0);
         let sz = Vec3::new(0.0, 0.0, size.z);
 
-        let top = rectangle_mesh(
+        let top = face_factory(
             min_corner + sy,
             Vec2::new(size.x, size.z),
             Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
         // NORTH = +Z
-        let north = rectangle_mesh(
+        let north = face_factory(
             min_corner + sz,
             Vec2::new(size.x, size.y),
             Mat4::identity(),
         );
 
         // SOUTH = -Z
-        let south = rectangle_mesh(
+        let south = face_factory(
             min_corner,
             Vec2::new(size.x, size.y),
             Mat4::identity(),
         );
 
         // EAST = +X
-        let east = rectangle_mesh(
+        let east = face_factory(
             min_corner + sx,
             Vec2::new(size.z, size.y),
             Mat4::from_angle_y(-Rad::turn_div_4()),
         );
         
         // WEST = -X
-        let west = rectangle_mesh(
+        let west = face_factory(
             min_corner,
             Vec2::new(size.z, size.y),
             Mat4::from_angle_y(-Rad::turn_div_4()),
         );
         
-        let bottom = rectangle_mesh(
+        let bottom = face_factory(
             min_corner,
             Vec2::new(size.x, size.z),
             Mat4::from_angle_x(Rad::turn_div_4()),
         );
 
-        AAPrismMeshes {
-            palette,
+        AAPrismFaces {
             top,
             north,
             south,
@@ -128,30 +129,39 @@ impl AAPrismMeshes {
             bottom,
         }
     }
+}
+
+impl AAPrismMeshes {
+    pub fn new(min_corner: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrismMeshes {
+        AAPrismMeshes {
+            palette,
+            faces: AAPrismFaces::new(min_corner, size, rectangle_mesh),
+        }
+    }
 
     pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {[
         Gm::new(
-            Mesh::new(context, &self.top),
+            Mesh::new(context, &self.faces.top),
             self.palette.top.opaque_material(),
         ),
         Gm::new(
-            Mesh::new(context, &self.north),
+            Mesh::new(context, &self.faces.north),
             self.palette.ns.opaque_material(),
         ),
         Gm::new(
-            Mesh::new(context, &self.south),
+            Mesh::new(context, &self.faces.south),
             self.palette.ns.opaque_material(),
         ),
         Gm::new(
-            Mesh::new(context, &self.east),
+            Mesh::new(context, &self.faces.east),
             self.palette.ew.opaque_material(),
         ),
         Gm::new(
-            Mesh::new(context, &self.west),
+            Mesh::new(context, &self.faces.west),
             self.palette.ew.opaque_material(),
         ),
         Gm::new(
-            Mesh::new(context, &self.bottom),
+            Mesh::new(context, &self.faces.bottom),
             self.palette.bottom.opaque_material(),
         ),
     ]}
