@@ -176,13 +176,21 @@ impl AAPrismMeshes {
 impl TerrainQuad {
     pub fn from_rect(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> TerrainQuad {
         
-        let from_unit_square =
+        let from_unit_square_3d =
             Mat4::from_translation(min_corner) *
             rotation_from_xy *
             Mat4::from_nonuniform_scale(size.x, size.y, 1.0);
         
         TerrainQuad {
-            to_unit_square: from_unit_square.invert().unwrap(),
+            to_unit_square: from_unit_square_3d.invert().unwrap(),
         }
+    }
+
+    pub fn contains(&self, point: Point2<f32>, inverse_camera: Mat4) -> bool {
+        // reintroducing dummy z coordinate because it seems smarter than
+        // removing z from the whole transform. probably?
+        let p = Point3::new(point.x, point.y, 0.0);
+        let relative = (self.to_unit_square * inverse_camera).transform_point(p);
+        (0.0 ..= 1.0).contains(&relative.x) && (0.0 ..= 1.0).contains(&relative.y)
     }
 }
