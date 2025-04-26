@@ -195,6 +195,7 @@ impl TerrainQuad {
         // removing z from the whole transform. probably?
         let p = Point3::new(point.x, point.y, 0.0);
         let relative = (self.to_unit_square * inverse_camera).transform_point(p);
+        println!("{:?}", relative);
         (0.0 ..= 1.0).contains(&relative.x) && (0.0 ..= 1.0).contains(&relative.y)
     }
 }

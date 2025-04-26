@@ -133,10 +133,10 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
 
         screen.render(&camera, &big_floor_gms, &[]);
 
-        if (!on_the_floor) {
+        if !on_the_floor {
             screen.render(&camera, &cube, &[]);
         }
-        if (!out_east) {
+        if !out_east {
             screen.render(&camera, &up, &[]);
         }
 
