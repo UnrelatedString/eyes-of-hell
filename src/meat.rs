@@ -111,7 +111,8 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
             UP_VEC,
         );
 
-        let inverse_projection = camera.projection().invert().unwrap();
+        let inverse_projection = (camera.projection() * camera.view()).invert().unwrap();
+        println!("{:?}", inverse_projection);
 
         // note: in the future I do want the camera not to be locked 100% to player at 0,0
         // but all of this is placeholder test code anyways so
