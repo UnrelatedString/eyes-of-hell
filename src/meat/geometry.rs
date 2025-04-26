@@ -58,15 +58,19 @@ impl AAPrism {
     pub fn gms(&self, context: &Context) -> [Gm<Mesh, ColorMaterial>; 6] {
         self.meshes.gms(context)
     }
+
+    pub fn get_terrain(&self) -> &AAPrismFaces<TerrainQuad> {
+        &self.terrain
+    }
 }
 
 pub struct AAPrismFaces<T> {
-    top: T,
-    north: T,
-    south: T,
-    east: T,
-    west: T,
-    bottom: T,
+    pub top: T,
+    pub north: T,
+    pub south: T,
+    pub east: T,
+    pub west: T,
+    pub bottom: T,
 }
 
 pub struct AAPrismMeshes {

@@ -85,13 +85,15 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         [rats![-1/2, 0, -3 - 1/2],
         Vec3::new(1.0, 1.0, 1.0)],
         PINK_CUBE,
-    ).gms(&context);
+    );
+    let east_gms = east.gms(&context);
 
     let big_floor = AAPrism::new(
         [rats![-5, -1, -5],
         rats![10, 1, 10]],
         AMBER_CUBE,
-    ).gms(&context);
+    );
+    let big_floor_gms = big_floor.gms(&context);
 
     let mut player = Player::new();
 
@@ -109,6 +111,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
             UP_VEC,
         );
 
+        let inverse_projection = camera.projection().invert().unwrap();
+
+        // note: in the future I do want the camera not to be locked 100% to player at 0,0
+        // but all of this is placeholder test code anyways so
+
+        let on_the_floor = big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
+        let out_east = east.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
+
         let pwidth = 0.2;
         let pheight = 0.4;
         let bod = AAPrismMeshes::new(
@@ -121,12 +131,17 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         let screen = frame_input.screen();
         screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
 
-        screen.render(&camera, &big_floor, &[]);
+        screen.render(&camera, &big_floor_gms, &[]);
 
-        screen.render(&camera, &cube, &[]);
-        screen.render(&camera, &up, &[]);
+        if (!on_the_floor) {
+            screen.render(&camera, &cube, &[]);
+        }
+        if (!out_east) {
+            screen.render(&camera, &up, &[]);
+        }
+
         screen.render(&camera, &fakeup, &[]);
-        screen.render(&camera, &east, &[]);
+        screen.render(&camera, &east_gms, &[]);
         screen.render(&camera, &bod, &[]);
 
         Default::default()
