@@ -198,7 +198,7 @@ impl TerrainQuad {
         let in_z = -out_z / transform.z.z;
         let p2 = Point3::new(point.x, point.y, in_z);
         let relative = transform.transform_point(p2);
-        println!("{:?}", relative);
+        //println!("{:?}", relative);
         (0.0 ..= 1.0).contains(&relative.x) && (0.0 ..= 1.0).contains(&relative.y)
     }
 }

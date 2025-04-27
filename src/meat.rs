@@ -113,10 +113,10 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
 
         let inverse_projection = (camera.projection() * camera.view()).invert().unwrap();
 
-        let player_feet_2d = Point2::new(
-            camera.viewport().width as f32, 
-            camera.viewport().height as f32,
-        ) / 2.0;
+        let player_feet_projected = (camera.view() * camera.projection()).transform_vector(player.pos);
+        let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
+
+        println!("{:?}", player_feet_2d);
 
         let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
         let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_projection);
