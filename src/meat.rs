@@ -118,7 +118,7 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         let player_feet_projected = camera_matrix.transform_vector(player.pos);
         let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
 
-        println!("{:?}", player_feet_2d);
+        println!("{:?} {:?}", player_feet_projected, player.pos);
 
         let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_camera);
         let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_camera);
