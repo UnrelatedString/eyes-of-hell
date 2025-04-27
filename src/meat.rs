@@ -112,13 +112,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         );
 
         let inverse_projection = (camera.projection() * camera.view()).invert().unwrap();
-        println!("{:?}", inverse_projection);
 
-        // note: in the future I do want the camera not to be locked 100% to player at 0,0
-        // but all of this is placeholder test code anyways so
+        // oh yeah 0,0 isn't the center of the screen LMAO
 
-        let on_the_floor = big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
-        let out_east = east.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
+        let player_feet_projected = (camera.projection() * camera.view()).transform_vector(player.pos);
+        let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
+
+        let on_the_floor = true; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
+        let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_projection);
 
         let pwidth = 0.2;
         let pheight = 0.4;
