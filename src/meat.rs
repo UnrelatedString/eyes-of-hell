@@ -47,7 +47,6 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
 
     let context = window.gl();
 
-
     // TODO: way way past MVP, make a custom Viewer that can smoothly transition between
     // orthographic and perspective. just for shits and giggles
     let mut camera = Camera::new_orthographic(
@@ -111,15 +110,18 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
             UP_VEC,
         );
 
-        let inverse_projection = (camera.projection() * camera.view()).invert().unwrap();
+        let camera_matrix =
+            Mat4::look_to_rh(Vec3::unit_z(), player.eye * -1, UP_VEC) *
+            Mat4::from_translation(-player.pos);
+        let inverse_camera = camera_matrix.invert().unwrap();
 
-        let player_feet_projected = (camera.view() * camera.projection()).transform_vector(player.pos);
+        let player_feet_projected = camera_matrix.transform_vector(player.pos);
         let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
 
         println!("{:?}", player_feet_2d);
 
-        let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_projection);
-        let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_projection);
+        let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_camera);
+        let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_camera);
 
         let pwidth = 0.2;
         let pheight = 0.4;
