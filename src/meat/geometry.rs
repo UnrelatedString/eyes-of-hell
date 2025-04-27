@@ -191,10 +191,13 @@ impl TerrainQuad {
     }
 
     pub fn contains(&self, point: Point2<f32>, inverse_camera: Mat4) -> bool {
-        // reintroducing dummy z coordinate because it seems smarter than
-        // removing z from the whole transform. probably?
+        // dummy z coordinate because MAAAAAATH! I MATHEDED >:3
         let p = Point3::new(point.x, point.y, 0.0);
-        let relative = (self.to_unit_square * inverse_camera).transform_point(p);
+        let transform = self.to_unit_square * inverse_camera;
+        let out_z = transform.row(2).dot(Vec4::new(point.x, point.y, 0.0, 1.0));
+        let in_z = -out_z / transform.z.z;
+        let p2 = Point3::new(point.x, point.y, in_z);
+        let relative = transform.transform_point(p2);
         println!("{:?}", relative);
         (0.0 ..= 1.0).contains(&relative.x) && (0.0 ..= 1.0).contains(&relative.y)
     }
