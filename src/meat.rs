@@ -105,32 +105,37 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         player.tick(frame_input.elapsed_time);
 
         camera.set_view(
-            player.pos + player.eye * DISTANCE,
-            player.pos,
+            player.pos.to_vec() + player.eye * DISTANCE,
+            player.pos.to_vec(),
             UP_VEC,
         );
 
         let camera_matrix =
             Mat4::from_angle_x(player.eye.pitch()) *
             Mat4::from_angle_y(player.eye.quadrant().angle()) *
-            Mat4::from_translation(-player.pos);
+            Mat4::from_translation(-player.pos.to_vec());
         let inverse_camera = camera_matrix.invert().unwrap();
 
-        let player_feet_projected = camera_matrix * player.pos.extend(1.0);
+        let player_feet_projected = camera_matrix.transform_point(player.pos);
         let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
         //println!("{:?}", camera_matrix * (player.pos + Vec3::unit_y() * 0.4).extend(1.0));
 
-        let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_camera);
+        let on_the_floor = true; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_camera);
         let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_camera);
 
         let pwidth = 0.2;
         let pheight = 0.4;
         let bod = AAPrismMeshes::new(
-            Vec3::new(pwidth/2.0, pheight, pwidth/2.0) + player.pos,
+            player.pos + Vec3::new(pwidth/2.0, pheight, pwidth/2.0),
             Vec3::new(pwidth, pheight, pwidth),
             PINK_CUBE,
         ).gms(&context);
 
+        let ughh = AAPrismMeshes::new(
+            east.get_terrain().top.onto_plane(player_feet_2d, inverse_camera),
+            Vec3::new(0.1, 0.1, 0.1),
+            PINK_CUBE,
+        ).gms(&context);
 
         let screen = frame_input.screen();
         screen.clear(ClearState::color_and_depth(0.0, 0.0, 0.0, 1.0, 1.0));
@@ -147,6 +152,8 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         screen.render(&camera, &fakeup, &[]);
         screen.render(&camera, &east_gms, &[]);
         screen.render(&camera, &bod, &[]);
+
+        screen.render(&camera, &ughh, &[]);
 
         Default::default()
     });

@@ -178,7 +178,7 @@ impl Quadrant {
 #[derive(Debug)]
 pub struct Player {
     pub eye: Octant,
-    pub pos: Vec3,
+    pub pos: Point3<f32>,
     wasd: Cardinals<KeyHoldState>,
     planar_dir: Vec3,
 }
@@ -190,7 +190,7 @@ impl Player {
     pub fn new() -> Player {
         Player {
             eye: Octant::from_quadrant(Quadrant::SW, Pos),
-            pos: Vec3::new(0.0, 0.0, 0.0),
+            pos: Point3::new(0.0, 0.0, 0.0),
             wasd: Cardinals {
                 up: KeyHoldState::new(Key::W),
                 down: KeyHoldState::new(Key::S),

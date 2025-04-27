@@ -30,10 +30,10 @@ pub fn pain(transform: Mat4, context: &Context, color: Srgba, is_transparent: bo
     )
 }
 
-fn rectangle_mesh(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
+fn rectangle_mesh(min_corner: Point3<f32>, size: Vec2, rotation_from_xy: Mat4) -> CpuMesh {
     let mut ret = CpuMesh::square();
     ret.transform(
-        Mat4::from_translation(min_corner) *
+        Mat4::from_translation(min_corner.to_vec()) *
         rotation_from_xy *
         Mat4::from_nonuniform_scale(size.x / 2.0, size.y / 2.0, 0.5) *
         Mat4::from_translation(Vec3::new(1.0, 1.0, 0.0))
@@ -50,8 +50,16 @@ impl AAPrism {
     pub fn new(min_and_size: [Vec3; 2], palette: PrismFacePalette) -> AAPrism {
         let [min_corner, size] = min_and_size;
         AAPrism {
-            meshes: AAPrismMeshes::new(min_corner, size, palette),
-            terrain : AAPrismFaces::new(min_corner, size, TerrainQuad::from_rect),
+            meshes: AAPrismMeshes::new(
+                Point3::from_vec(min_corner),
+                size,
+                palette,
+            ),
+            terrain: AAPrismFaces::new(
+                Point3::from_vec(min_corner),
+                size,
+                TerrainQuad::from_rect,
+            ),
         }
     }
 
@@ -83,8 +91,8 @@ pub struct TerrainQuad {
 }
 
 impl <T> AAPrismFaces<T> {
-    pub fn new<F>(min_corner: Vec3, size: Vec3, face_factory: F) -> AAPrismFaces<T>
-        where F: Fn(Vec3, Vec2, Mat4) -> T
+    pub fn new<F>(min_corner: Point3<f32>, size: Vec3, face_factory: F) -> AAPrismFaces<T>
+        where F: Fn(Point3<f32>, Vec2, Mat4) -> T
     {
         let sx = Vec3::new(size.x, 0.0, 0.0);
         let sy = Vec3::new(0.0, size.y, 0.0);
@@ -142,7 +150,7 @@ impl <T> AAPrismFaces<T> {
 }
 
 impl AAPrismMeshes {
-    pub fn new(min_corner: Vec3, size: Vec3, palette: PrismFacePalette) -> AAPrismMeshes {
+    pub fn new(min_corner: Point3<f32>, size: Vec3, palette: PrismFacePalette) -> AAPrismMeshes {
         AAPrismMeshes {
             palette,
             faces: AAPrismFaces::new(min_corner, size, rectangle_mesh),
@@ -178,10 +186,10 @@ impl AAPrismMeshes {
 }
 
 impl TerrainQuad {
-    pub fn from_rect(min_corner: Vec3, size: Vec2, rotation_from_xy: Mat4) -> TerrainQuad {
+    pub fn from_rect(min_corner: Point3<f32>, size: Vec2, rotation_from_xy: Mat4) -> TerrainQuad {
         
         let from_unit_square_3d =
-            Mat4::from_translation(min_corner) *
+            Mat4::from_translation(min_corner.to_vec()) *
             rotation_from_xy *
             Mat4::from_nonuniform_scale(size.x, size.y, 1.0);
         
@@ -192,7 +200,7 @@ impl TerrainQuad {
         }
     }
 
-    pub fn contains(&self, point: Point2<f32>, inverse_camera: Mat4) -> bool {
+    pub fn onto_plane(&self, point: Point2<f32>, inverse_camera: Mat4) -> Point3<f32> {
         // dummy z coordinate because MAAAAAATH! I MATHEDED >:3
         let p = Point3::new(point.x, point.y, 0.0);
         let transform = self.to_unit_square * inverse_camera;
@@ -201,6 +209,11 @@ impl TerrainQuad {
         let p2 = Point3::new(point.x, point.y, in_z);
         let relative = transform.transform_point(p2);
         println!("{:?}", relative);
+        relative
+    }
+
+    pub fn contains(&self, point: Point2<f32>, inverse_camera: Mat4) -> bool {
+        let relative = self.onto_plane(point, inverse_camera);
         (0.0 ..= 1.0).contains(&relative.x) && (0.0 ..= 1.0).contains(&relative.y)
     }
 }
