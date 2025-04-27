@@ -111,7 +111,7 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         );
 
         let camera_matrix =
-            Mat4::look_to_rh(Vec3::unit_z(), player.eye * -1, UP_VEC) *
+            //Mat4::look_to_rh(Point3::new(0.0, 0.0, 1.0), player.eye * -1.0, UP_VEC) *
             Mat4::from_translation(-player.pos);
         let inverse_camera = camera_matrix.invert().unwrap();
 
