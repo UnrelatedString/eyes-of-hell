@@ -111,13 +111,14 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         );
 
         let camera_matrix =
-            Mat4::from_angle_x(-player.eye.pitch()) *
+            Mat4::from_angle_x(player.eye.pitch()) *
             Mat4::from_angle_y(player.eye.quadrant().angle()) *
             Mat4::from_translation(-player.pos);
         let inverse_camera = camera_matrix.invert().unwrap();
 
         let player_feet_projected = camera_matrix * player.pos.extend(1.0);
         let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
+        //println!("{:?}", camera_matrix * (player.pos + Vec3::unit_y() * 0.4).extend(1.0));
 
         let on_the_floor = false; //big_floor.get_terrain().top.contains(Point2::new(0.0, 0.0), inverse_camera);
         let out_east = east.get_terrain().top.contains(player_feet_2d, inverse_camera);

@@ -185,6 +185,8 @@ impl TerrainQuad {
             rotation_from_xy *
             Mat4::from_nonuniform_scale(size.x, size.y, 1.0);
         
+        //panic!("{:?} should be {:?}", min_corner, from_unit_square_3d.transform_point(Point3::new(0.0, 0.0, 0.0)));
+
         TerrainQuad {
             to_unit_square: from_unit_square_3d.invert().unwrap(),
         }
