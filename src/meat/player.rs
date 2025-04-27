@@ -84,6 +84,10 @@ impl Octant {
             f(self.z()),
         )
     }
+
+    pub fn pitch(self) -> Rad<f32> {
+        Rad(self.vertical * PI / 4.0)
+    }
 }
 
 impl From<Octant> for Vec3 {
@@ -148,19 +152,24 @@ impl Quadrant {
     pub fn input_to_spatial(self, input: Vec3) -> Vec3 {
         // Repeat after me: Premature optimization is the root of all evil
         use Quadrant::*;
-        let raw = Mat3::from_angle_y(Rad(
+        let raw = Mat3::from_angle_y(self.angle()) * input;
+        if raw.is_zero() {
+            raw
+        } else {
+            raw.normalize()
+        }
+    }
+
+    pub fn angle(self) -> Rad<f32> {
+        use Quadrant::*;
+        Rad(
             match self {
                 NE => -3.0 * PI / 4.0,
                 NW => -PI / 4.0,
                 SW => PI / 4.0,
                 SE => -5.0 * PI / 4.0,
             } 
-        )) * input;
-        if raw.is_zero() {
-            raw
-        } else {
-            raw.normalize()
-        }
+        )
     }
 }
 
