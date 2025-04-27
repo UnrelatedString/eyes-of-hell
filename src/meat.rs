@@ -111,7 +111,7 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
         );
 
         let camera_matrix =
-            Mat4::from_angle_x(player.eye.pitch()) *
+            Mat4::from_angle_x(-player.eye.pitch()) *
             Mat4::from_angle_y(player.eye.quadrant().angle()) *
             Mat4::from_translation(-player.pos);
         let inverse_camera = camera_matrix.invert().unwrap();
