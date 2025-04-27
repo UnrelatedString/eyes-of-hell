@@ -115,7 +115,7 @@ pub async fn run(window_defaults: WindowSettings) -> Result<(), WindowError> {
             Mat4::from_translation(-player.pos);
         let inverse_camera = camera_matrix.invert().unwrap();
 
-        let player_feet_projected = camera_matrix.transform_vector(player.pos);
+        let player_feet_projected = camera_matrix * player.pos.extend(1.0);
         let player_feet_2d = Point2::new(player_feet_projected.x, player_feet_projected.y);
 
         println!("{:?} {:?}", player_feet_projected, player.pos);
