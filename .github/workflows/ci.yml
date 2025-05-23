@@ -28,84 +28,30 @@ jobs:
       - name: Build webpack
         run: npm run release
 
-  windows:
-    runs-on: windows-latest
+  bin:
+    strategy:
+      matrix:
+        profile:
+          - os: windows-latest
+            platform: win
+          - os: ubuntu-latest
+            platform: linux-x86
+          - os: ubuntu-24.04-arm
+            platform: linux-arm
+          - os: macos-13
+            platform: mac-x86
+          - os: macos-latest
+            platform: mac-arm
+    runs-on: ${{ matrix.profile.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Cache
         uses: actions/cache@v4
-        env:
-          platform: win
         with:
           path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ matrix.profile.platform }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ env.platform }}
+            ${{ matrix.profile.platform }}-
       - name: Build Windows EXE
         run: $CARGO_BUILD
         shell: bash
-
-  linux-x86:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: linux-x86
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build Linux executable
-        run: $CARGO_BUILD
-
-  linux-arm:
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: linux-arm
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build Linux executable
-        run: $CARGO_BUILD
-
-  mac-x86:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: mac-x86
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build MacOS executable
-        run: $CARGO_BUILD
-
-  mac-arm:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: mac-arm
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build MacOS executable
-        run: $CARGO_BUILD
-
