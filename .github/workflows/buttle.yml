@@ -36,130 +36,62 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
-  windows:
-    runs-on: windows-latest
+  bin:
+    strategy:
+      matrix:
+        profile:
+          - os: windows-latest
+            platform: win
+            ext: .exe
+          - os: ubuntu-latest
+            platform: linux-x86
+          - os: ubuntu-24.04-arm
+            platform: linux-arm
+          - os: macos-13
+            platform: mac-x86
+          - os: macos-latest
+            platform: mac-arm
+    runs-on: ${{ matrix.profile.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Cache
         uses: actions/cache@v4
-        env:
-          platform: win
         with:
           path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ matrix.profile.platform }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            ${{ env.platform }}
-      - name: Build Windows EXE
+            ${{ matrix.profile.platform }}-
+      - name: Build ${{ matrix.profile.ext || 'executable' }} for ${{ matrix.profile.platform }}
         run: $CARGO_BUILD
         shell: bash
-      - name: Save eyes-of-hell.exe as artifact
+      - name: Save eyes-of-hell${{ matrix.profile.ext }} as artifact
         uses: actions/upload-artifact@v4.6.1
         with:
-          name: butler-windows-build
-          path: target\release\eyes-of-hell.exe
-          retention-days: 1
-          if-no-files-found: error
-          overwrite: true
-
-  linux-x86:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: linux-x86
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build Linux executable
-        run: $CARGO_BUILD
-      - name: Save eyes-of-hell as artifact
-        uses: actions/upload-artifact@v4.6.1
-        with:
-          name: butler-linux-x86-build
-          path: target/release/eyes-of-hell
-          retention-days: 1
-          if-no-files-found: error
-          overwrite: true
-
-  linux-arm:
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: linux-arm
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build Linux executable
-        run: $CARGO_BUILD
-      - name: Save eyes-of-hell as artifact
-        uses: actions/upload-artifact@v4.6.1
-        with:
-          name: butler-linux-arm-build
-          path: target/release/eyes-of-hell
-          retention-days: 1
-          if-no-files-found: error
-          overwrite: true
-
-  mac-x86:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: mac-x86
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build MacOS executable
-        run: $CARGO_BUILD
-      - name: Save eyes-of-hell as artifact
-        uses: actions/upload-artifact@v4.6.1
-        with:
-          name: butler-mac-x86-build
-          path: target/release/eyes-of-hell
-          retention-days: 1
-          if-no-files-found: error
-          overwrite: true
-
-  mac-arm:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
-        env:
-          platform: mac-arm
-        with:
-          path: target/*/dist
-          key: ${{ env.platform }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ env.platform }}
-      - name: Build MacOS executable
-        run: $CARGO_BUILD
-      - name: Save eyes-of-hell as artifact
-        uses: actions/upload-artifact@v4.6.1
-        with:
-          name: butler-mac-arm-build
-          path: target/release/eyes-of-hell
+          name: butler-${{ matrix.profile.platform }}-build
+          path: target/release/eyes-of-hell.exe${{ matrix.profile.ext }}
           retention-days: 1
           if-no-files-found: error
           overwrite: true
         
   upload-everything:
     runs-on: ubuntu-latest
-    needs: ["web", "windows", "linux-x86", "linux-arm", "mac-x86", "mac-arm"]
+    strategy:
+      matrix:
+        profile:
+          - platform: web
+          - platform: win
+            ext: .exe
+            channel: windows
+            suffix: win-x86-
+          - platform: linux-x86
+            suffix: linux-x86-
+          - platform: linux-arm
+            suffix: linux-arm
+          - platform: mac-x86
+            suffix: macos-x86-
+          - platform: mac-arm
+            suffix: macos-arm
+    needs: ["web", "bin"]
     steps:
     
       - name: Retrieve web build as artifact
@@ -177,90 +109,23 @@ jobs:
           PACKAGE: web
           CHANNEL: web
           
-      - name: Retrieve Windows build as artifact
+      - name: Retrieve ${{ matrix.profile.platform }} build as artifact
         uses: actions/download-artifact@v4
         with:
-          name: butler-windows-build
-          path: windows
+          name: butler-${{ matrix.profile.platform }}-build
+          path: ${{ matrix.profile.platform }}
           latest: true
       - name: Rename eyes-of-hell.exe to eyes-of-hell_win-x86-64.exe
-        run: mv windows/eyes-of-hell.exe windows/eyes-of-hell_win-x86-64.exe
-      - name: Upload Windows build to itch.io
+        if: ${{ matrix.profile.suffix }}
+        run: mv ${{ matrix.profile.platform }}/eyes-of-hell${{ matrix.profile.ext }} ${{ matrix.profile.platform }}/eyes-of-hell_${{ matrix.profile.suffix }}64${{ matrix.profile.ext }}
+      - name: Upload ${{ matrix.profile.channel || matrix.profile.platform }} build to itch.io
         uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
           ITCH_USER: unrelatedstring
           ITCH_GAME: eyes-of-hell
-          PACKAGE: windows
-          CHANNEL: windows
-          
-      - name: Retrieve Linux (x86) build as artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: butler-linux-x86-build
-          path: linux-x86
-          latest: true
-      - name: Rename eyes-of-hell to eyes-of-hell_linux-x86-64
-        run: mv linux-x86/eyes-of-hell linux-x86/eyes-of-hell_linux-x86-64
-      - name: Upload Linux (x86) build to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: unrelatedstring
-          ITCH_GAME: eyes-of-hell
-          PACKAGE: linux-x86
-          CHANNEL: linux-x86
-
-      - name: Retrieve Linux (ARM) build as artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: butler-linux-arm-build
-          path: linux-arm
-          latest: true
-      - name: Rename eyes-of-hell to eyes-of-hell_linux-arm64
-        run: mv linux-arm/eyes-of-hell linux-arm/eyes-of-hell_linux-arm64
-      - name: Upload Linux (ARM) build to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: unrelatedstring
-          ITCH_GAME: eyes-of-hell
-          PACKAGE: linux-arm
-          CHANNEL: linux-arm
-          
-      - name: Retrieve MacOS (x86) build as artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: butler-mac-x86-build
-          path: mac-x86
-          latest: true
-      - name: Rename eyes-of-hell to eyes-of-hell_macos-x86-64
-        run: mv mac-x86/eyes-of-hell mac-x86/eyes-of-hell_macos-x86-64
-      - name: Upload MacOS (x86) build to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: unrelatedstring
-          ITCH_GAME: eyes-of-hell
-          PACKAGE: mac-x86
-          CHANNEL: mac-x86
-          
-      - name: Retrieve MacOS (ARM) build as artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: butler-mac-arm-build
-          path: mac-arm
-          latest: true
-      - name: Rename eyes-of-hell to eyes-of-hell_mac-arm64
-        run: mv mac-arm/eyes-of-hell mac-arm/eyes-of-hell_mac-arm64
-      - name: Upload MacOS (ARM) build to itch.io
-        uses: yeslayla/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCH_BUTLER_CREDS }}
-          ITCH_USER: unrelatedstring
-          ITCH_GAME: eyes-of-hell
-          PACKAGE: mac-arm
-          CHANNEL: mac-arm
+          PACKAGE: ${{ matrix.profile.platform }}
+          CHANNEL: ${{ matrix.profile.channel || matrix.profile.platform }}
           
       - name: Clean up transient artifacts
         uses: geekyeggo/delete-artifact@v5
