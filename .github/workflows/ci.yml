@@ -52,6 +52,6 @@ jobs:
           key: ${{ matrix.profile.platform }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ matrix.profile.platform }}-
-      - name: Build Windows EXE
+      - name: Build ${{ matrix.profile.platform }} executable
         run: $CARGO_BUILD
         shell: bash
